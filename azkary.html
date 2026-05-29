@@ -1261,6 +1261,10 @@ async function init() {
   if (cv) return fail('content.json некорректен', cv + '\n\nПроверь схему в CLAUDE.md или README.md.');
   state.content = contentData;
 
+  // Манифест с правильным start_url (с ?u=) — до возможного экрана ввода имени,
+  // чтобы установка работала и оттуда. Имя обновим ещё раз в runPostNameInit.
+  setupDynamicManifest();
+
   // 5. Публичный режим без имени → показываем экран ввода имени и НЕ запускаем миграцию
   // (миграция должна работать с финальным slug, иначе данные потеряются).
   if (state.personal.mode === 'public' && !state.personal.user.name) {
@@ -1280,6 +1284,10 @@ async function init() {
 // Часть init, которая идёт ПОСЛЕ того, как мы убедились, что имя пользователя известно
 // (slug стабилен). Вынесено отдельно, чтобы вызывать из enterName после ввода имени.
 function runPostNameInit() {
+  // Имя пользователя теперь окончательно известно — обновим манифест,
+  // чтобы в названии ярлыка было правильное имя (в т.ч. после ввода в public).
+  setupDynamicManifest();
+
   // Чистим бэкапы миграций старше 30 дней.
   cleanupStaleMigrationBackups();
 
@@ -1947,6 +1955,43 @@ function authorName() {
           state.personal.author.name.trim()) || 'автора';
 }
 
+// Динамический manifest. Подменяем статический manifest.json сгенерированным,
+// чтобы установленное PWA запускалось ИМЕННО в той учётке, из которой его поставили:
+// start_url сохраняет текущий ?u=. Иначе семейная сборка, открытая из ярлыка без ?u=,
+// грузила personal/default.json (которого в семье нет) и показывала экран ошибки —
+// именно на это жаловались («в браузере всё, а приложение выдаёт ошибку»).
+// Имя пользователя попадает в название ярлыка. ВСЕ URL абсолютные: относительные пути
+// в blob-манифесте резолвятся от blob: и ломаются.
+function setupDynamicManifest() {
+  try {
+    const origin = location.origin;
+    const dir = location.pathname.replace(/[^/]*$/, '');            // каталог страницы, напр. "/"
+    const startUrl = origin + location.pathname + location.search;  // сохраняем ?u=...
+    const name = getUserName();
+    const manifest = {
+      name: (name && name !== 'друг') ? `Азкары · ${name}` : 'Азкары',
+      short_name: 'Азкары',
+      start_url: startUrl,
+      scope: origin + dir,
+      display: 'standalone',
+      background_color: '#F5EFE3',
+      theme_color: '#F5EFE3',
+      lang: 'ru',
+      icons: [
+        { src: origin + dir + 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
+        { src: origin + dir + 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' }
+      ]
+    };
+    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+    const url = URL.createObjectURL(blob);
+    let link = document.querySelector('link[rel="manifest"]');
+    if (!link) { link = document.createElement('link'); link.rel = 'manifest'; document.head.appendChild(link); }
+    if (setupDynamicManifest._url) { try { URL.revokeObjectURL(setupDynamicManifest._url); } catch (e) {} }
+    link.href = url;
+    setupDynamicManifest._url = url;
+  } catch (e) { /* манифест не критичен для работы приложения */ }
+}
+
 // ============================================================
 // РЕНДЕР
 // ============================================================
@@ -1960,20 +2005,23 @@ function render() {
   flushPendingNote();
 
   switch (state.screen) {
-    case 'home':       return renderHome();
-    case 'section':    return renderSection();
-    case 'zikr':       return renderZikr();
-    case 'letter':     return renderLetter();
-    case 'help':       return renderHelp();
-    case 'feedback':   return renderFeedback();
-    case 'settings':   return renderSettings();
-    case 'archive':    return renderArchive();
-    case 'enterName':  return renderEnterName();
-    case 'changeName': return renderChangeName();
-    case 'error':      return renderError();
+    case 'home':       renderHome(); break;
+    case 'section':    renderSection(); break;
+    case 'zikr':       renderZikr(); break;
+    case 'letter':     renderLetter(); break;
+    case 'help':       renderHelp(); break;
+    case 'feedback':   renderFeedback(); break;
+    case 'settings':   renderSettings(); break;
+    case 'archive':    renderArchive(); break;
+    case 'enterName':  renderEnterName(); break;
+    case 'changeName': renderChangeName(); break;
+    case 'error':      renderError(); break;
     default:           app.innerHTML = '<div class="loading">…</div>';
   }
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  // Прокрутка к началу страницы после каждой перерисовки. Раньше тут стоял
+  // window.scrollTo, но из-за `return` в каждом case он не срабатывал — отсюда
+  // жалоба «при переходе к следующему зикру страница не вверху».
+  try { window.scrollTo(0, 0); } catch (e) { /* nope */ }
 }
 
 // ----- HOME -----
