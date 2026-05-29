@@ -1,0 +1,3221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Азкары</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="theme-color" content="#F5EFE3">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Азкары">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5EFE3;
+    --surface: #FFFFFF;
+    --ink: #1F1A14;
+    --ink-muted: #7A6F5C;
+    --accent: #8B5E34;
+    --accent-soft: #EEE0CC;
+    --gold: #B5895A;
+    --success: #4A6B47;
+    --success-soft: #DCE7D6;
+    --error: #8B3A2E;
+    --error-soft: #F0DDD7;
+    --border: #E8DECB;
+    --display: 'Cormorant Garamond', Georgia, serif;
+    --body: 'DM Sans', system-ui, sans-serif;
+    --arabic: 'Amiri', 'Scheherazade New', 'Times New Roman', serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: var(--body);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 24px 20px 60px;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button { font-family: inherit; cursor: pointer; }
+  #app { max-width: 600px; margin: 0 auto; }
+
+  .muted { color: var(--ink-muted); }
+  .center { text-align: center; }
+
+  /* === ОБЩЕЕ === */
+  .back-btn {
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    color: var(--ink-muted);
+    padding: 8px 8px 8px 0;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .back-btn:hover { color: var(--ink); }
+
+  .dots-divider {
+    text-align: center;
+    color: var(--gold);
+    letter-spacing: 0.6em;
+    margin: 28px 0 24px;
+    font-size: 14px;
+    opacity: 0.7;
+    user-select: none;
+  }
+
+  /* === MIGRATION BANNER === */
+  .migration-banner {
+    position: relative;
+    background: var(--accent-soft);
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    padding: 14px 36px 14px 16px;
+    margin-bottom: 22px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .migration-banner-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .migration-banner ul {
+    margin: 4px 0 6px 0;
+    padding-left: 18px;
+  }
+  .migration-banner li { margin-bottom: 2px; }
+  .migration-banner-foot { color: var(--ink-muted); margin-top: 6px; }
+  .migration-banner-close {
+    position: absolute;
+    top: 8px; right: 10px;
+    background: transparent;
+    border: none;
+    color: var(--ink-muted);
+    font-size: 16px;
+    line-height: 1;
+    padding: 4px 6px;
+  }
+  .migration-banner-close:hover { color: var(--ink); }
+
+  /* === HOME === */
+  .home-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .home-head-text { flex: 1; min-width: 0; }
+  .gear-btn {
+    flex-shrink: 0;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-muted);
+    font-size: 18px;
+    line-height: 1;
+    margin-top: 4px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .gear-btn:hover { border-color: var(--gold); color: var(--accent); }
+  .greet-line {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    line-height: 1.2;
+  }
+  .greet-arabic {
+    font-family: var(--arabic);
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .greet-name {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .greet-name::before {
+    content: '·';
+    color: var(--gold);
+    margin-right: 10px;
+    font-style: normal;
+  }
+  .greet-date {
+    color: var(--ink-muted);
+    font-size: 14px;
+    margin-top: 10px;
+  }
+
+  .section-list { display: flex; flex-direction: column; gap: 12px; }
+  .section-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: border-color 0.15s, transform 0.08s;
+  }
+  .section-card:hover { border-color: var(--gold); }
+  .section-card:active { transform: scale(0.995); }
+  .section-card.done-today { background: var(--bg); }
+  .section-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.15;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .section-sub {
+    color: var(--ink-muted);
+    font-size: 13.5px;
+    margin-top: 3px;
+  }
+  .section-progress {
+    color: var(--gold);
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .section-progress.complete { color: var(--success); }
+
+  .letter-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 19px;
+    font-weight: 500;
+    padding: 10px;
+    letter-spacing: -0.005em;
+  }
+  .letter-link:hover { color: var(--accent); }
+  .letter-link .env { color: var(--accent); margin-right: 8px; }
+
+  /* Предисловие автора вверху главной (публичный режим) */
+  .home-preface { margin-bottom: 4px; }
+  .home-preface-body {
+    font-family: var(--display);
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--ink);
+    white-space: pre-wrap;
+  }
+  .home-help-link {
+    display: inline-block;
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-family: var(--body);
+    font-size: 13.5px;
+    font-weight: 500;
+    padding: 12px 0 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .home-help-link:hover { color: var(--ink); }
+
+  /* Призыв «Предложи свой зикр или функцию» внизу главной */
+  .feedback-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 19px;
+    font-weight: 500;
+    padding: 10px;
+    letter-spacing: -0.005em;
+  }
+  .feedback-link:hover { color: var(--accent); }
+  .feedback-link .env { color: var(--accent); margin-right: 8px; font-style: normal; }
+
+  /* === HELP (как пользоваться) === */
+  .help-page { padding-top: 4px; }
+  .help-intro {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    margin-bottom: 24px;
+  }
+  .help-block { margin-bottom: 20px; }
+  .help-block h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    margin-bottom: 4px;
+  }
+  .help-block p {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+  }
+  .help-block .ic {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* === FEEDBACK (предложи своё) === */
+  .feedback-contact { margin-top: 4px; }
+  .feedback-contact-label {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+  .feedback-email {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 17px;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 14px;
+    margin-bottom: 14px;
+    user-select: all;
+    -webkit-user-select: all;
+    word-break: break-all;
+  }
+  .feedback-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  .feedback-actions .name-submit { flex: 0 0 auto; }
+  .feedback-copy-btn {
+    width: auto;
+    margin: 0;
+  }
+  .feedback-note {
+    font-size: 13px;
+    color: var(--success);
+    margin-top: 12px;
+    min-height: 18px;
+  }
+
+  /* === SECTION (список зикров) === */
+  .section-head-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .section-reset-btn {
+    background: transparent;
+    border: none;
+    color: var(--ink-muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 8px;
+    transition: color 0.15s;
+  }
+  .section-reset-btn:hover { color: var(--accent); }
+  .section-head {
+    margin-bottom: 18px;
+  }
+  .section-head h1 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .section-head .subtitle {
+    color: var(--ink-muted);
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+  .item-list { display: flex; flex-direction: column; gap: 8px; }
+  .item-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    transition: border-color 0.15s;
+  }
+  .item-card:hover { border-color: var(--gold); }
+  .item-num {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--ink-muted);
+    min-width: 24px;
+    font-variant-numeric: tabular-nums;
+  }
+  .item-preview {
+    font-size: 15px;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .item-main {
+    flex: 1;
+    min-width: 0;
+  }
+  .item-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 2px;
+  }
+  .item-main.has-title .item-preview {
+    color: var(--ink-muted);
+    font-size: 13px;
+  }
+  .item-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .item-check {
+    font-size: 16px;
+    color: var(--success);
+    font-weight: 700;
+  }
+  .item-note-icon {
+    font-size: 14px;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .item-tag-xN {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    font-variant-numeric: tabular-nums;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 6px;
+    line-height: 1.3;
+  }
+
+  /* === ZIKR === */
+  .zikr-meta {
+    text-align: center;
+    color: var(--ink-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    margin-bottom: 22px;
+  }
+  .zikr-title {
+    text-align: center;
+    font-family: var(--display);
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 18px;
+  }
+
+  .arabic-block {
+    font-family: var(--arabic);
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.85;
+    color: var(--ink);
+    direction: rtl;
+    text-align: center;
+    margin: 0 auto 22px;
+    max-width: 540px;
+  }
+
+  .transliteration {
+    font-family: var(--display);
+    font-size: 21px;
+    font-weight: 500;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+    margin-bottom: 14px;
+  }
+
+  .translation {
+    font-family: var(--body);
+    font-size: 15px;
+    color: var(--ink-muted);
+    text-align: center;
+    line-height: 1.5;
+    font-style: italic;
+    max-width: 480px;
+    margin: 0 auto 28px;
+  }
+
+  /* Большой круглый таппер */
+  .tapper-wrap { display: flex; justify-content: center; margin-bottom: 26px; }
+  .tapper {
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    border: 1px solid var(--gold);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.08s;
+    user-select: none;
+    -webkit-user-select: none;
+    padding: 0;
+  }
+  .tapper:active { transform: scale(0.97); }
+  .tapper.done {
+    background: var(--success-soft);
+    border-color: var(--success);
+  }
+  .tapper-count {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 92px;
+    line-height: 1;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .tapper.done .tapper-count { color: var(--success); }
+  .tapper-hint {
+    font-size: 12.5px;
+    color: var(--ink-muted);
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  .tapper.done .tapper-hint {
+    color: var(--success);
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 17px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-top: 8px;
+  }
+
+  /* Комментарий автора к зикру */
+  .comment-card {
+    background: var(--accent-soft);
+    border: 1px solid var(--gold);
+    border-left-width: 3px;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+  }
+  .comment-label {
+    display: block;
+    font-family: var(--body);
+    font-style: normal;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .comment-body {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--ink);
+    white-space: pre-line;
+  }
+
+  /* Личные заметки пользователя */
+  .user-notes {
+    margin-bottom: 22px;
+  }
+  .user-notes-label {
+    display: block;
+    font-family: var(--body);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .user-notes-area {
+    width: 100%;
+    min-height: 92px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .user-notes-area:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent-soft);
+  }
+  .user-notes-area::placeholder {
+    color: var(--ink-muted);
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  /* Источник и теги */
+  .zikr-source {
+    text-align: center;
+    color: var(--ink-muted);
+    font-size: 12.5px;
+    margin: -16px auto 18px;
+    max-width: 480px;
+    line-height: 1.4;
+  }
+  .tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .tag-pill {
+    border: 1px solid var(--border);
+    color: var(--ink-muted);
+    background: var(--surface);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+
+  /* Управление количеством повторов */
+  .repeat-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    color: var(--ink-muted);
+    font-size: 13px;
+  }
+  .repeat-line strong {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--accent);
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 2px;
+  }
+  .icon-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-muted);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .icon-btn:hover { border-color: var(--gold); color: var(--accent); }
+  .icon-btn.active { border-color: var(--accent); color: var(--accent); }
+
+  .repeat-editor {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 22px;
+    position: relative;
+  }
+  .repeat-editor-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .qty-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: var(--ink-muted);
+    font-size: 16px;
+    line-height: 1;
+    padding: 4px 6px;
+  }
+  .qty-close:hover { color: var(--ink); }
+  .qty-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .qty-btn {
+    flex: 1;
+    min-width: 52px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 6px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--ink);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .qty-btn:hover { border-color: var(--gold); }
+  .qty-btn.current { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .qty-custom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .qty-custom-label { font-size: 13px; color: var(--ink-muted); }
+  .qty-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 10px;
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    outline: none;
+  }
+  .qty-input:focus { border-color: var(--accent); }
+  .qty-ok {
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 13.5px;
+  }
+  .qty-reset {
+    display: inline-block;
+    font-size: 12.5px;
+    color: var(--accent);
+    background: transparent;
+    border: none;
+    padding: 4px 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .qty-reset:hover { color: var(--ink); }
+
+  .zikr-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .nav-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px;
+    font-family: var(--body);
+    font-weight: 500;
+    font-size: 14.5px;
+    color: var(--ink);
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--gold); }
+  .nav-btn:disabled { color: var(--ink-muted); opacity: 0.5; cursor: default; }
+
+  /* === LETTER === */
+  .letter-page {
+    padding: 8px 6px 0;
+  }
+  .letter-photo {
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 1px solid var(--border);
+  }
+  .letter-photo--user {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 22px;
+  }
+  .letter-photo--author {
+    width: 64px;
+    height: 64px;
+  }
+  .letter-head {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-muted);
+    margin-bottom: 28px;
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+  .letter-body {
+    font-family: var(--display);
+    font-size: 21px;
+    line-height: 1.7;
+    color: var(--ink);
+    white-space: pre-wrap;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .letter-sig-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    margin: 36px 0 0;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .letter-sig {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--accent);
+  }
+  .letter-sig-row.no-photo .letter-sig {
+    margin: 0 auto;
+    text-align: center;
+  }
+  .letter-sig-row.no-photo {
+    justify-content: center;
+  }
+
+  /* === SETTINGS === */
+  .settings-page { padding-top: 4px; }
+  .settings-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 28px;
+    letter-spacing: -0.01em;
+    margin-bottom: 22px;
+  }
+  .settings-group {
+    margin-bottom: 26px;
+  }
+  .settings-group-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .settings-group-label::before,
+  .settings-group-label::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid var(--border);
+  }
+  .settings-btn {
+    display: block;
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: var(--body);
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--ink);
+    text-align: left;
+    margin-bottom: 8px;
+    transition: border-color 0.15s;
+  }
+  .settings-btn:hover { border-color: var(--gold); }
+  .settings-btn--danger {
+    color: var(--error);
+    border-color: var(--error-soft);
+  }
+  .settings-btn--danger:hover { border-color: var(--error); }
+  .settings-group-foot {
+    font-size: 12px;
+    color: var(--ink-muted);
+    line-height: 1.4;
+    margin: 4px 4px 0;
+  }
+  .settings-group-count {
+    font-size: 12.5px;
+    color: var(--ink-muted);
+    margin: -2px 4px 8px;
+  }
+
+  /* === ARCHIVE === */
+  .archive-page { padding-top: 4px; }
+  .archive-hint {
+    color: var(--ink-muted);
+    font-size: 14px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .archive-list { display: flex; flex-direction: column; gap: 12px; }
+  .archive-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .archive-card-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .archive-card-section {
+    color: var(--ink-muted);
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .archive-card-date {
+    color: var(--ink-muted);
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .archive-card-note {
+    background: var(--accent-soft);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+    margin-bottom: 8px;
+    white-space: pre-wrap;
+  }
+  .archive-card-cr {
+    font-size: 12.5px;
+    color: var(--ink-muted);
+  }
+  .archive-empty {
+    color: var(--ink-muted);
+    text-align: center;
+    padding: 36px 12px;
+    font-style: italic;
+  }
+
+  /* Личный комментарий (💌 «Тебе лично») — тот же фон, иконка в заголовке */
+  .comment-card--personal { /* визуально идентичен .comment-card; различие — иконка в label */ }
+  .comment-icon {
+    display: inline-block;
+    font-size: 14px;
+    margin-right: 4px;
+    vertical-align: -1px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  /* === ENTER NAME / CHANGE NAME (публичный режим) === */
+  .enter-name-page {
+    padding-top: 8px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .enter-name-page .greet-line {
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .name-form {
+    max-width: 360px;
+    margin: 28px auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .name-form-label {
+    font-family: var(--display);
+    font-size: 19px;
+    color: var(--ink);
+    text-align: center;
+    letter-spacing: -0.005em;
+  }
+  .name-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: var(--body);
+    font-size: 16px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .name-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent-soft);
+  }
+  .name-submit {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 10px;
+    padding: 13px;
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 15px;
+    transition: background 0.15s;
+  }
+  .name-submit:hover { background: var(--ink); }
+
+  /* === EXPAND TOGGLE (длинные тексты) === */
+  .expand-toggle {
+    display: inline-block;
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 0 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .expand-toggle:hover { color: var(--ink); }
+  .user-notes-preview {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+    white-space: pre-wrap;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .user-notes-preview:hover { border-color: var(--gold); }
+
+  /* === ERROR === */
+  .error-card {
+    background: var(--surface);
+    border: 1px solid var(--error-soft);
+    border-left: 4px solid var(--error);
+    border-radius: 12px;
+    padding: 22px;
+    margin-top: 12px;
+  }
+  .error-card h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--error);
+    margin-bottom: 10px;
+    letter-spacing: -0.005em;
+  }
+  .error-card p { margin-bottom: 10px; color: var(--ink); }
+  .error-card pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--error);
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 14px 0;
+    line-height: 1.4;
+  }
+
+  .loading {
+    text-align: center;
+    color: var(--ink-muted);
+    padding: 80px 0;
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 18px;
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 18px 16px 50px; }
+    .arabic-block { font-size: 28px; line-height: 1.8; }
+    .transliteration { font-size: 19px; }
+    .tapper { width: 220px; height: 220px; }
+    .tapper-count { font-size: 84px; }
+    .section-title { font-size: 20px; }
+    .greet-arabic { font-size: 26px; }
+    .greet-name { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div id="app"><div class="loading">…</div></div>
+
+<script>
+// ============================================================
+// СОСТОЯНИЕ
+// ============================================================
+// Версия схемы данных в localStorage. Меняется при структурных миграциях
+// (см. maybeMigrate и паттерн preMigrationBackup.vN в CLAUDE.md).
+const SCHEMA_VERSION = 2;
+
+const state = {
+  // loading | home | section | zikr | letter | help | settings | archive | error | enterName | changeName
+  screen: 'loading',
+  helpFrom: 'home',                  // куда вернуться с экрана «Как пользоваться» (home | settings)
+  prefaceExpanded: false,            // длинное предисловие на главной развёрнуто (публичный режим)
+  content: null,             // общие зикры — { sections: [...] } из content.json
+  personal: null,            // личное — { mode, user, author, letter, personalComments } из personal/*.json
+  requestedUser: null,       // ?u= из URL (sanitized) или null
+  currentSectionId: null,
+  currentItemIndex: 0,
+  counter: 0,
+  doneFlash: false,                  // включается, когда counter впервые достиг repeat
+  editingRepeat: false,              // развёрнут ли инлайн-пикер количества
+  commentExpanded: false,            // длинный общий комментарий развёрнут
+  personalCommentExpanded: false,    // длинный личный комментарий («Тебе лично») развёрнут
+  notesEditing: false,               // textarea «Мои заметки» в режиме редактирования
+  autoAdvanceTimer: null,
+  errorTitle: null,
+  errorDetail: null
+};
+
+const app = document.getElementById('app');
+
+// ============================================================
+// ЗАГРУЗКА И ВАЛИДАЦИЯ
+// Три слоя:
+//   azkary.html         — код (одинаковый для всех)
+//   content.json        — общие зикры (sections)
+//   personal/*.json     — личное (mode, user, author, letter, personalComments)
+// Выбор учётки — параметром ?u=<name> в URL. Без параметра грузится personal/default.json.
+// ============================================================
+
+// Парсит URL-параметр ?u=name. Возвращает sanitized строку или null.
+function getRequestedUser() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const u = params.get('u');
+    if (!u) return null;
+    // Допускаем только латиницу/цифры/дефис/подчёркивание — чтобы не выйти за пределы personal/.
+    const safe = u.replace(/[^a-zA-Z0-9_-]/g, '');
+    return safe || null;
+  } catch (e) { return null; }
+}
+
+async function loadJson(path) {
+  const res = await fetch(path, { cache: 'no-cache' });
+  if (!res.ok) {
+    const err = new Error(`HTTP ${res.status} ${res.statusText} (${path})`);
+    err.status = res.status;
+    err.path = path;
+    throw err;
+  }
+  const raw = await res.text();
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    const err = new Error(`JSON в ${path} некорректен: ${e.message}`);
+    err.parseError = true;
+    err.path = path;
+    throw err;
+  }
+}
+
+// Нормализует personal — гарантирует наличие пустых дефолтов, чтобы дальше код не проверял каждое поле.
+function normalizePersonal(p) {
+  p.user = p.user || {};
+  p.user.name = (p.user.name || '').toString().trim();
+  p.user.photo = p.user.photo || '';
+  if (p.author != null) {
+    p.author.name = p.author.name || '';
+    p.author.photo = p.author.photo || '';
+  }
+  p.letter = p.letter || '';
+  p.feedbackEmail = (p.feedbackEmail || '').toString().trim();
+  p.personalComments = p.personalComments || {};
+  return p;
+}
+
+async function init() {
+  // 1. Запрошенный пользователь из URL — определяет, какой personal/*.json грузить.
+  const requested = getRequestedUser();
+  state.requestedUser = requested;
+  const userFile = requested || 'default';
+
+  // 2. Грузим personal/{userFile}.json
+  let personalData;
+  try {
+    personalData = await loadJson(`personal/${userFile}.json`);
+  } catch (e) {
+    if (requested) {
+      return fail(`Учётная запись «${requested}» не найдена`,
+        e.message + '\n\nПроверьте ссылку — параметр ?u= должен совпадать с именем файла в папке personal/. Если ссылка вам кажется правильной, попросите того, кто её прислал, проверить написание.');
+    }
+    return fail('Учётная запись по умолчанию не найдена',
+      e.message + '\n\nФайл personal/default.json не загружается.\n' +
+      'Возможные причины:\n' +
+      '• Это семейная версия — открывайте по ссылке с параметром ?u=имя (например, ?u=wife).\n' +
+      '• Сайт открыт по схеме file:// — браузер блокирует чтение локальных файлов. Размести папку на Netlify Drop или запусти локальный сервер (см. README).');
+  }
+  const pv = validatePersonal(personalData, `personal/${userFile}.json`);
+  if (pv) return fail('Личный файл некорректен', pv + '\n\nПроверь схему в CLAUDE.md или README.md.');
+
+  // 3. Защита публичной версии от подмены через ?u=.
+  // Если пришли с ?u=wife, но это публичная сборка (личный файл — public-default) —
+  // перезагружаем personal/default.json, чтобы кто-то не получил доступ к чужим личным данным,
+  // случайно подбросив ?u= с известным именем.
+  if (personalData.mode === 'public' && requested && requested !== 'default') {
+    let defaultData;
+    try {
+      defaultData = await loadJson('personal/default.json');
+    } catch (e) {
+      return fail('Публичная версия не настроена',
+        'Параметр ?u= не разрешён в публичной версии, а personal/default.json не загружается:\n' +
+        e.message);
+    }
+    const dv = validatePersonal(defaultData, 'personal/default.json');
+    if (dv) return fail('Личный файл некорректен', dv);
+    personalData = defaultData;
+    state.requestedUser = null;
+  }
+
+  state.personal = normalizePersonal(personalData);
+
+  // 4. Грузим content.json (общие зикры).
+  let contentData;
+  try {
+    contentData = await loadJson('content.json');
+  } catch (e) {
+    return fail('Не удалось загрузить content.json',
+      e.message + '\n\nВозможные причины:\n' +
+      '• Файл не лежит рядом с azkary.html\n' +
+      '• Сайт открыт по схеме file:// — браузер блокирует чтение локальных файлов. Размести папку на Netlify Drop или запусти локальный сервер (см. README).\n' +
+      '• В JSON есть синтаксическая ошибка — открой файл в VS Code, он подсветит её красной волной.');
+  }
+  const cv = validateContent(contentData);
+  if (cv) return fail('content.json некорректен', cv + '\n\nПроверь схему в CLAUDE.md или README.md.');
+  state.content = contentData;
+
+  // 5. Публичный режим без имени → показываем экран ввода имени и НЕ запускаем миграцию
+  // (миграция должна работать с финальным slug, иначе данные потеряются).
+  if (state.personal.mode === 'public' && !state.personal.user.name) {
+    const stored = lsGet('azkary.publicUserName', null);
+    if (!stored || typeof stored !== 'string' || !stored.trim()) {
+      state.screen = 'enterName';
+      render();
+      return;
+    }
+    // Имя уже введено раньше — продолжаем как обычно.
+  }
+
+  // 6. Имя пользователя определено — миграция, листенеры, рендер.
+  runPostNameInit();
+}
+
+// Часть init, которая идёт ПОСЛЕ того, как мы убедились, что имя пользователя известно
+// (slug стабилен). Вынесено отдельно, чтобы вызывать из enterName после ввода имени.
+function runPostNameInit() {
+  // Чистим бэкапы миграций старше 30 дней.
+  cleanupStaleMigrationBackups();
+
+  // Миграция localStorage с (sectionId, idx) на zikrId — один раз, с pre-backup.
+  // Если pre-backup провалится — миграция не запустится, см. фасад.
+  const report = {
+    migratedNotes: 0, migratedCustomRepeats: 0, migratedProgress: 0,
+    archivedDuringMigration: 0, archivedDuringOrphanScan: 0
+  };
+  const migrationFailure = maybeMigrate(report);
+  if (migrationFailure) {
+    return fail('Миграция данных невозможна', migrationFailure);
+  }
+
+  // Сирот ищем независимо: они могут появляться при последующих правках content.json.
+  processOrphans(report);
+
+  // Если что-то ненулевое — запомним для одноразовой плашки на home.
+  if (anyReportNonzero(report)) {
+    lsSet(`azkary.${getUserSlug()}.lastMigrationReport.v${SCHEMA_VERSION}`, report);
+  }
+
+  cleanupOldProgress();
+  applyHash();
+  window.addEventListener('hashchange', applyHash);
+  window.addEventListener('popstate', applyHash);
+  render();
+}
+
+// ============================================================
+// HASH-РОУТИНГ
+// Форматы:
+//   '' / '#'             → home
+//   '#letter'            → letter
+//   '#section/<id>'      → список зикров раздела
+//   '#zikr/<id>/<idx>'   → конкретный зикр
+// Поддержка нужна для кнопки «назад» в браузере и для ссылок.
+// ============================================================
+let suppressHashWrite = false;
+function applyHash() {
+  // Если показываем экран ввода имени — игнорируем хеш, пока имя не будет введено.
+  if (state.screen === 'enterName') return;
+  const h = (location.hash || '').replace(/^#/, '');
+  const parts = h.split('/').filter(Boolean);
+  suppressHashWrite = true;
+  try {
+    if (parts.length === 0) {
+      state.screen = 'home';
+    } else if (parts[0] === 'letter' && hasLetter()) {
+      state.screen = 'letter';
+    } else if (parts[0] === 'settings') {
+      state.screen = 'settings';
+    } else if (parts[0] === 'help') {
+      state.screen = 'help';
+    } else if (parts[0] === 'feedback' && state.personal && state.personal.feedbackEmail) {
+      state.screen = 'feedback';
+    } else if (parts[0] === 'change-name' && state.personal && state.personal.mode === 'public') {
+      state.screen = 'changeName';
+    } else if (parts[0] === 'section' && parts[1] && findSection(parts[1])) {
+      state.currentSectionId = parts[1];
+      state.screen = 'section';
+    } else if (parts[0] === 'zikr' && parts[1]) {
+      const f = findItemById(parts[1]);
+      if (f) {
+        state.currentSectionId = f.section.id;
+        state.currentItemIndex = f.idx;
+        state.counter = getProgress(f.item.id);
+        state.doneFlash = false;
+        state.editingRepeat = false;
+        state.commentExpanded = false;
+        state.personalCommentExpanded = false;
+        state.notesEditing = false;
+        state.screen = 'zikr';
+      } else {
+        state.screen = 'home';
+      }
+    } else if (parts[0] === 'archive') {
+      state.screen = 'archive';
+    } else {
+      state.screen = 'home';
+    }
+  } finally {
+    suppressHashWrite = false;
+  }
+  if (document.readyState === 'loading') return;  // первый рендер сделает init()
+  render();
+}
+
+function writeHash(hash) {
+  if (suppressHashWrite) return;
+  if (location.hash === hash || (hash === '' && !location.hash)) return;
+  // pushState вместо location.hash, чтобы не дёргать onhashchange
+  history.pushState(null, '', hash || location.pathname);
+}
+
+// Валидирует content.json: только sections. Поля user/author/letterFromDad
+// больше не ожидаются — если они там есть (от старого формата), молча игнорируем.
+function validateContent(data) {
+  if (!data || typeof data !== 'object') return 'Корень content.json должен быть объектом.';
+  if (!Array.isArray(data.sections) || data.sections.length === 0)
+    return 'Отсутствует или пуст массив sections в content.json.';
+
+  // Для проверки уникальности item.id по всему файлу.
+  const seenIds = new Map();   // id → "section/idx"
+
+  for (let si = 0; si < data.sections.length; si++) {
+    const s = data.sections[si];
+    if (!s.id || typeof s.id !== 'string')
+      return `sections[${si}]: отсутствует строковое поле id.`;
+    if (!s.title || typeof s.title !== 'string')
+      return `sections[${si}] (${s.id}): отсутствует строковое поле title.`;
+    if (!Array.isArray(s.items) || s.items.length === 0)
+      return `sections[${si}] (${s.id}): отсутствует или пуст массив items.`;
+    for (let ii = 0; ii < s.items.length; ii++) {
+      const it = s.items[ii];
+      const where = `sections[${si}].items[${ii}]`;
+      if (typeof it.id !== 'string' || !it.id.trim())
+        return `${where}: отсутствует обязательное поле id (непустая строка).`;
+      const prev = seenIds.get(it.id);
+      if (prev) {
+        return `Дублирующийся ID «${it.id}»: используется в ${prev} и в ${s.id}#${ii}.`;
+      }
+      seenIds.set(it.id, `${s.id}#${ii}`);
+      if (it.title != null && typeof it.title !== 'string')
+        return `${where} (id «${it.id}»): поле title должно быть строкой.`;
+      for (const f of ['arabic', 'transliteration', 'translation']) {
+        if (typeof it[f] !== 'string' || !it[f].trim())
+          return `${where} (id «${it.id}»): отсутствует или пустое поле ${f}.`;
+      }
+      if (typeof it.repeat !== 'number' || it.repeat < 1 || !Number.isFinite(it.repeat))
+        return `${where} (id «${it.id}»): поле repeat должно быть положительным числом.`;
+      if (it.source != null && typeof it.source !== 'string')
+        return `${where} (id «${it.id}»): поле source должно быть строкой.`;
+      if (it.tags != null) {
+        if (!Array.isArray(it.tags))
+          return `${where} (id «${it.id}»): поле tags должно быть массивом строк.`;
+        for (let ti = 0; ti < it.tags.length; ti++) {
+          if (typeof it.tags[ti] !== 'string')
+            return `${where} (id «${it.id}»): tags[${ti}] должен быть строкой.`;
+        }
+      }
+      if (it.comment != null && typeof it.comment !== 'string')
+        return `${where} (id «${it.id}»): поле comment должно быть строкой.`;
+    }
+  }
+  return null;
+}
+
+// Валидирует personal/*.json. Два режима: family (требует user.name) и public (имя может быть пустым).
+function validatePersonal(data, fileName) {
+  if (!data || typeof data !== 'object') return `Корень ${fileName} должен быть объектом.`;
+  if (data.mode !== 'family' && data.mode !== 'public')
+    return `Неизвестный режим в ${fileName}: ${JSON.stringify(data.mode)}. Допустимы только "family" или "public".`;
+  if (data.user != null && (typeof data.user !== 'object' || Array.isArray(data.user)))
+    return `Поле user в ${fileName} должно быть объектом.`;
+  if (data.mode === 'family') {
+    if (!data.user || typeof data.user.name !== 'string' || !data.user.name.trim())
+      return `Файл ${fileName} не заполнен: отсутствует имя пользователя (user.name).`;
+  } else {
+    // public — user.name может быть пустым или отсутствовать
+    if (data.user && data.user.name != null && typeof data.user.name !== 'string')
+      return `Поле user.name в ${fileName} должно быть строкой (или отсутствовать).`;
+  }
+  if (data.user && data.user.photo != null && typeof data.user.photo !== 'string')
+    return `Поле user.photo в ${fileName} должно быть строкой.`;
+  if (data.author != null) {
+    if (typeof data.author !== 'object' || Array.isArray(data.author))
+      return `Поле author в ${fileName} должно быть объектом.`;
+    if (data.author.name != null && typeof data.author.name !== 'string')
+      return `Поле author.name в ${fileName} должно быть строкой.`;
+    if (data.author.photo != null && typeof data.author.photo !== 'string')
+      return `Поле author.photo в ${fileName} должно быть строкой.`;
+  }
+  if (data.letter != null && typeof data.letter !== 'string')
+    return `Поле letter в ${fileName} должно быть строкой.`;
+  if (data.feedbackEmail != null && typeof data.feedbackEmail !== 'string')
+    return `Поле feedbackEmail в ${fileName} должно быть строкой (адрес email).`;
+  if (data.personalComments != null) {
+    if (typeof data.personalComments !== 'object' || Array.isArray(data.personalComments))
+      return `Поле personalComments в ${fileName} должно быть объектом { zikrId: текст }.`;
+    for (const id in data.personalComments) {
+      if (typeof data.personalComments[id] !== 'string')
+        return `personalComments["${id}"] в ${fileName} должно быть строкой.`;
+    }
+  }
+  return null;
+}
+
+function fail(title, detail) {
+  state.screen = 'error';
+  state.errorTitle = title;
+  state.errorDetail = detail;
+  render();
+}
+
+// ============================================================
+// УТИЛИТЫ
+// ============================================================
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Экранирует HTML и разрешает мини-markdown: **жирный** и *курсив*.
+// Сначала escape — иначе пользовательский <script> превратился бы в реальный тег.
+// Внутрь разметки не пускаем переносы строк и звёздочки, чтобы не съесть лишнее.
+function escMd(s) {
+  let out = esc(s);
+  out = out.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
+  out = out.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
+  return out;
+}
+
+function todayKey() {
+  // Локальная дата в формате YYYY-MM-DD (не UTC — чтобы «сегодня» совпадало с тем, что видит пользователь).
+  const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${m}-${day}`;
+}
+
+function formatToday() {
+  // «вторник, 4 июня»
+  try {
+    const d = new Date();
+    return d.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
+  } catch (e) {
+    return '';
+  }
+}
+
+// Единственные точки доступа к имени пользователя.
+// Источники в порядке приоритета:
+//   1. state.personal.user.name        — для family и для public с заранее заданным именем
+//   2. localStorage 'azkary.publicUserName' — для public-режима после первого ввода
+//   3. 'друг'                          — fallback, при нормальном потоке не должен срабатывать
+// Никаких прямых обращений к state.personal.user.name / state.content.user в коде вне этих функций.
+function getUserName() {
+  if (state.personal && state.personal.user && state.personal.user.name) {
+    return state.personal.user.name;
+  }
+  if (state.personal && state.personal.mode === 'public') {
+    const stored = lsGet('azkary.publicUserName', null);
+    if (stored && typeof stored === 'string' && stored.trim()) return stored.trim();
+  }
+  return 'друг';
+}
+function getUserSlug() {
+  return getUserName().trim().toLowerCase().replace(/[^a-zа-яё0-9_-]/gi, '_');
+}
+
+function lsGet(key, fallback) {
+  try {
+    const v = localStorage.getItem(key);
+    return v == null ? fallback : JSON.parse(v);
+  } catch (e) { return fallback; }
+}
+function lsSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+  catch (e) { return false; }
+}
+
+// === Ключи и хелперы пользовательских данных ===
+// Адресация по уникальному zikrId — устойчива к перестановке зикров.
+function progressKey(zikrId, date) {
+  return `azkary.${getUserSlug()}.progress.${date || todayKey()}.${zikrId}`;
+}
+function customRepeatKey(zikrId) {
+  return `azkary.${getUserSlug()}.customRepeat.${zikrId}`;
+}
+function userNoteKey(zikrId) {
+  return `azkary.${getUserSlug()}.note.${zikrId}`;
+}
+
+function getProgress(zikrId)          { return lsGet(progressKey(zikrId), 0); }
+function setProgress(zikrId, n)       { lsSet(progressKey(zikrId), n); }
+function getCustomRepeat(zikrId) {
+  const v = lsGet(customRepeatKey(zikrId), null);
+  return (typeof v === 'number' && v >= 1) ? v : null;
+}
+function setCustomRepeat(zikrId, n)   { lsSet(customRepeatKey(zikrId), n); }
+function clearCustomRepeat(zikrId)    {
+  try { localStorage.removeItem(customRepeatKey(zikrId)); } catch (e) {}
+}
+function getEffectiveRepeat(zikrId, fallback) {
+  const c = getCustomRepeat(zikrId);
+  return c == null ? fallback : c;
+}
+function getUserNote(zikrId) {
+  return lsGet(userNoteKey(zikrId), '') || '';
+}
+function setUserNote(zikrId, text) {
+  if (!text || !text.trim()) {
+    try { localStorage.removeItem(userNoteKey(zikrId)); } catch (e) {}
+  } else {
+    lsSet(userNoteKey(zikrId), text);
+  }
+}
+function hasUserNote(zikrId) {
+  const v = getUserNote(zikrId);
+  return typeof v === 'string' && v.trim().length > 0;
+}
+
+// Удаляет ключи прогресса всех ДАТ, кроме сегодняшней. Запускается при старте.
+function cleanupOldProgress() {
+  const today = todayKey();
+  const prefix = `azkary.${getUserSlug()}.progress.`;
+  try {
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(prefix) && !k.startsWith(prefix + today + '.')) {
+        keys.push(k);
+      }
+    }
+    keys.forEach(k => localStorage.removeItem(k));
+  } catch (e) { /* ничего */ }
+}
+
+// Debounce-сохранение заметок. Любая навигация со зикра обязана вызвать flushPendingNote().
+const pendingNote = { zikrId: null, value: null, timer: null };
+function schedulePendingNoteSave(zikrId, value) {
+  pendingNote.zikrId = zikrId;
+  pendingNote.value = value;
+  if (pendingNote.timer) clearTimeout(pendingNote.timer);
+  pendingNote.timer = setTimeout(flushPendingNote, 500);
+}
+function flushPendingNote() {
+  if (pendingNote.timer) { clearTimeout(pendingNote.timer); pendingNote.timer = null; }
+  if (pendingNote.zikrId == null) return;
+  setUserNote(pendingNote.zikrId, pendingNote.value || '');
+  pendingNote.zikrId = null;
+  pendingNote.value = null;
+}
+
+// === Универсальный сброс ===
+function clearKeysByPrefix(prefix) {
+  try {
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(prefix)) keys.push(k);
+    }
+    keys.forEach(k => localStorage.removeItem(k));
+    return keys.length;
+  } catch (e) { return 0; }
+}
+function resetZikrProgress(zikrId) {
+  try { localStorage.removeItem(progressKey(zikrId)); } catch (e) {}
+}
+function resetSectionProgress(sectionId) {
+  // Новая адресация: ключ не содержит sectionId, поэтому идём по items раздела.
+  const section = findSection(sectionId);
+  if (!section) return;
+  section.items.forEach(it => {
+    try { localStorage.removeItem(progressKey(it.id)); } catch (e) {}
+  });
+}
+function resetTodayProgress() {
+  clearKeysByPrefix(`azkary.${getUserSlug()}.progress.${todayKey()}.`);
+}
+function resetAllNotes() {
+  clearKeysByPrefix(`azkary.${getUserSlug()}.note.`);
+}
+function resetAllCustomRepeats() {
+  clearKeysByPrefix(`azkary.${getUserSlug()}.customRepeat.`);
+}
+function wipeUser() {
+  clearKeysByPrefix(`azkary.${getUserSlug()}.`);
+}
+
+function sectionStats(section) {
+  let done = 0;
+  for (let i = 0; i < section.items.length; i++) {
+    const it = section.items[i];
+    const target = getEffectiveRepeat(it.id, it.repeat);
+    if (getProgress(it.id) >= target) done++;
+  }
+  return { done, total: section.items.length };
+}
+
+// Найти зикр по уникальному id, вернуть { section, item, idx } или null.
+function findItemById(zikrId) {
+  for (const s of state.content.sections) {
+    for (let i = 0; i < s.items.length; i++) {
+      if (s.items[i].id === zikrId) return { section: s, item: s.items[i], idx: i };
+    }
+  }
+  return null;
+}
+
+// ============================================================
+// МИГРАЦИЯ
+// Любая структурная миграция localStorage обязана:
+//   1. Записать preMigrationBackup.vN ДО любых изменений.
+//   2. Накопить отчёт о действиях.
+//   3. Показать пользователю одноразовую плашку.
+//   4. Авто-удалять бэкап через 30 дней.
+// Подробнее — в CLAUDE.md, раздел «Хранилище и сброс данных».
+// ============================================================
+const MIGRATION_BACKUP_TTL_DAYS = 30;
+
+function schemaVersionKey() { return `azkary.${getUserSlug()}.schemaVersion`; }
+
+function anyReportNonzero(r) {
+  return r.migratedNotes + r.migratedCustomRepeats + r.migratedProgress
+       + r.archivedDuringMigration + r.archivedDuringOrphanScan > 0;
+}
+
+function cleanupStaleMigrationBackups() {
+  const prefix = `azkary.${getUserSlug()}.preMigrationBackup.`;
+  const cutoff = Date.now() - MIGRATION_BACKUP_TTL_DAYS * 24 * 60 * 60 * 1000;
+  try {
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(prefix)) keys.push(k);
+    }
+    keys.forEach(k => {
+      const v = lsGet(k, null);
+      const created = v && v.createdAt ? Date.parse(v.createdAt) : NaN;
+      if (Number.isFinite(created) && created < cutoff) {
+        try { localStorage.removeItem(k); } catch (e) {}
+      }
+    });
+  } catch (e) { /* nothing */ }
+}
+
+// Парсер старых ключей: вернёт { kind, sectionId, idx } или null.
+// Учитывает, что sectionId может содержать '-', поэтому разбор справа.
+function parseLegacyKey(k, slug) {
+  const prefix = `azkary.${slug}.`;
+  if (!k.startsWith(prefix)) return null;
+  const tail = k.slice(prefix.length);
+  // tail вида: 'progress.YYYY-MM-DD.<sectionId>.<idx>' | 'note.<sectionId>.<idx>' | 'customRepeat.<sectionId>.<idx>'
+  const m = tail.match(/^(progress\.\d{4}-\d{2}-\d{2}|note|customRepeat)\.(.+)\.(\d+)$/);
+  if (!m) return null;
+  return { kind: m[1], sectionId: m[2], idx: parseInt(m[3], 10) };
+}
+
+// Возвращает null при успехе или строку с описанием ошибки, если бэкап не удался.
+function maybeMigrate(report) {
+  if (lsGet(schemaVersionKey(), 0) >= SCHEMA_VERSION) return null;
+
+  const slug = getUserSlug();
+  const userPrefix = `azkary.${slug}.`;
+
+  // Соберём все ключи пользователя ДО любых изменений.
+  const allKeys = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(userPrefix)) allKeys.push(k);
+    }
+  } catch (e) {
+    return 'Не удалось прочитать localStorage. Возможно браузер запретил доступ к хранилищу.';
+  }
+
+  // СТРАХОВКА: pre-migration backup. Только если получится записать — продолжаем.
+  if (allKeys.length > 0) {
+    const snapshotKeys = {};
+    allKeys.forEach(k => {
+      const v = localStorage.getItem(k);
+      if (v != null) snapshotKeys[k] = v;
+    });
+    const backupKey = `azkary.${slug}.preMigrationBackup.v${SCHEMA_VERSION}`;
+    const ok = lsSet(backupKey, {
+      createdAt: new Date().toISOString(),
+      schemaVersionBefore: lsGet(schemaVersionKey(), 0),
+      keys: snapshotKeys
+    });
+    if (!ok) {
+      return 'Не удалось создать резервную копию данных перед миграцией (возможно, переполнено хранилище браузера). Чтобы не потерять заметки, миграция отменена. Освободите место в localStorage и перезагрузите страницу.';
+    }
+  }
+
+  // Сирот собираем по парам (sectionId, idx) — несколько ключей одного зикра в одну архивную запись.
+  const orphans = new Map();
+  const bucket = (groupKey, sectionId, idx) => {
+    if (!orphans.has(groupKey)) {
+      orphans.set(groupKey, { sectionId, idx, note: null, customRepeat: null, progress: null });
+    }
+    return orphans.get(groupKey);
+  };
+
+  allKeys.forEach(k => {
+    const parsed = parseLegacyKey(k, slug);
+    if (!parsed) return;
+    const rawValue = localStorage.getItem(k);
+    let parsedValue;
+    try { parsedValue = JSON.parse(rawValue); }
+    catch (e) { parsedValue = rawValue; }
+
+    const section = state.content.sections.find(s => s.id === parsed.sectionId);
+    const item = section && section.items[parsed.idx];
+
+    if (item && item.id) {
+      // Переименование под новый ключ.
+      const newKey = `azkary.${slug}.${parsed.kind}.${item.id}`;
+      try { localStorage.setItem(newKey, rawValue); } catch (e) { /* skip */ }
+      try { localStorage.removeItem(k); } catch (e) {}
+      if (parsed.kind === 'note') report.migratedNotes++;
+      else if (parsed.kind === 'customRepeat') report.migratedCustomRepeats++;
+      else if (parsed.kind.startsWith('progress.')) report.migratedProgress++;
+    } else {
+      const groupKey = `${parsed.sectionId}|${parsed.idx}`;
+      const b = bucket(groupKey, parsed.sectionId, parsed.idx);
+      if (parsed.kind === 'note') b.note = parsedValue;
+      else if (parsed.kind === 'customRepeat') b.customRepeat = parsedValue;
+      else if (parsed.kind.startsWith('progress.')) {
+        b.progress = b.progress || {};
+        b.progress[parsed.kind.slice('progress.'.length)] = parsedValue;
+      }
+      try { localStorage.removeItem(k); } catch (e) {}
+    }
+  });
+
+  // Сироты → в архив.
+  if (orphans.size > 0) {
+    const archive = lsGet(`azkary.${slug}.archive`, []) || [];
+    const nowIso = new Date().toISOString();
+    orphans.forEach(({ sectionId, idx, note, customRepeat, progress }) => {
+      const section = state.content.sections.find(s => s.id === sectionId);
+      archive.push({
+        zikrId: `__legacy:${sectionId}:${idx}`,
+        lastTransliteration: '(неизвестно — мигрировано со старой структуры)',
+        lastSectionTitle: section ? section.title : sectionId,
+        note: note || '',
+        customRepeat: customRepeat || null,
+        progress: progress || null,
+        archivedAt: nowIso
+      });
+      report.archivedDuringMigration++;
+    });
+    lsSet(`azkary.${slug}.archive`, archive);
+  }
+
+  lsSet(schemaVersionKey(), SCHEMA_VERSION);
+  return null;
+}
+
+// Сравнивает текущий contentSnapshot со списком зикров и архивирует осиротевшие
+// note/customRepeat/progress. Запускается на каждом старте.
+function processOrphans(report) {
+  const slug = getUserSlug();
+  const currentIds = new Set();
+  state.content.sections.forEach(s => s.items.forEach(it => currentIds.add(it.id)));
+
+  const prevSnapshot = lsGet(`azkary.${slug}.contentSnapshot`, {}) || {};
+  const archive = lsGet(`azkary.${slug}.archive`, []) || [];
+
+  const userPrefix = `azkary.${slug}.`;
+  const notePrefix = userPrefix + 'note.';
+  const crPrefix = userPrefix + 'customRepeat.';
+  const progressPrefix = userPrefix + 'progress.';
+
+  const orphans = new Map();   // zikrId → { note, customRepeat, progress }
+  const bucket = (id) => {
+    if (!orphans.has(id)) orphans.set(id, { note: null, customRepeat: null, progress: null });
+    return orphans.get(id);
+  };
+
+  const keys = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(userPrefix)) keys.push(k);
+    }
+  } catch (e) { return; }
+
+  keys.forEach(k => {
+    if (k.startsWith(notePrefix)) {
+      const id = k.slice(notePrefix.length);
+      if (!currentIds.has(id)) {
+        bucket(id).note = lsGet(k, '');
+        try { localStorage.removeItem(k); } catch (e) {}
+      }
+    } else if (k.startsWith(crPrefix)) {
+      const id = k.slice(crPrefix.length);
+      if (!currentIds.has(id)) {
+        bucket(id).customRepeat = lsGet(k, null);
+        try { localStorage.removeItem(k); } catch (e) {}
+      }
+    } else if (k.startsWith(progressPrefix)) {
+      // progress.YYYY-MM-DD.<id>
+      const tail = k.slice(progressPrefix.length);
+      const m = tail.match(/^(\d{4}-\d{2}-\d{2})\.(.+)$/);
+      if (m && !currentIds.has(m[2])) {
+        const b = bucket(m[2]);
+        b.progress = b.progress || {};
+        b.progress[m[1]] = lsGet(k, 0);
+        try { localStorage.removeItem(k); } catch (e) {}
+      }
+    }
+  });
+
+  if (orphans.size > 0) {
+    const nowIso = new Date().toISOString();
+    orphans.forEach((data, zikrId) => {
+      const meta = prevSnapshot[zikrId] || {};
+      archive.push({
+        zikrId,
+        lastTransliteration: meta.transliteration || '(неизвестно)',
+        lastSectionTitle: meta.sectionTitle || '',
+        note: data.note || '',
+        customRepeat: data.customRepeat || null,
+        progress: data.progress || null,
+        archivedAt: nowIso
+      });
+      report.archivedDuringOrphanScan++;
+    });
+    lsSet(`azkary.${slug}.archive`, archive);
+  }
+
+  // Перезаписываем снапшот текущим состоянием — будет основой для следующего processOrphans.
+  const snapshot = {};
+  state.content.sections.forEach(s => s.items.forEach(it => {
+    snapshot[it.id] = { transliteration: it.transliteration, sectionTitle: s.title };
+  }));
+  lsSet(`azkary.${slug}.contentSnapshot`, snapshot);
+}
+
+function getArchive() {
+  return lsGet(`azkary.${getUserSlug()}.archive`, []) || [];
+}
+function setArchive(arr) {
+  lsSet(`azkary.${getUserSlug()}.archive`, arr);
+}
+function getMigrationBackupInfo() {
+  // Возвращает { createdAt: Date } для самого свежего активного бэкапа, или null.
+  const prefix = `azkary.${getUserSlug()}.preMigrationBackup.`;
+  let latest = null;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(prefix)) {
+        const v = lsGet(k, null);
+        const t = v && v.createdAt ? Date.parse(v.createdAt) : NaN;
+        if (Number.isFinite(t) && (!latest || t > latest.t)) latest = { t, key: k };
+      }
+    }
+  } catch (e) { return null; }
+  if (!latest) return null;
+  return {
+    createdAt: new Date(latest.t),
+    expiresAt: new Date(latest.t + MIGRATION_BACKUP_TTL_DAYS * 24 * 60 * 60 * 1000)
+  };
+}
+
+function findSection(id) {
+  return state.content.sections.find(s => s.id === id) || null;
+}
+
+function vibrate(p) {
+  try { navigator.vibrate && navigator.vibrate(p); } catch (e) { /* nope */ }
+}
+
+function hasLetter() {
+  const l = state.personal && state.personal.letter;
+  return typeof l === 'string' && l.trim().length > 0;
+}
+
+function authorName() {
+  return (state.personal && state.personal.author && state.personal.author.name &&
+          state.personal.author.name.trim()) || 'автора';
+}
+
+// ============================================================
+// РЕНДЕР
+// ============================================================
+function render() {
+  // отменим автопереход на случай навигации до его срабатывания
+  if (state.autoAdvanceTimer) {
+    clearTimeout(state.autoAdvanceTimer);
+    state.autoAdvanceTimer = null;
+  }
+  // сохраним невыспавшуюся заметку перед перерисовкой (textarea будет уничтожен)
+  flushPendingNote();
+
+  switch (state.screen) {
+    case 'home':       return renderHome();
+    case 'section':    return renderSection();
+    case 'zikr':       return renderZikr();
+    case 'letter':     return renderLetter();
+    case 'help':       return renderHelp();
+    case 'feedback':   return renderFeedback();
+    case 'settings':   return renderSettings();
+    case 'archive':    return renderArchive();
+    case 'enterName':  return renderEnterName();
+    case 'changeName': return renderChangeName();
+    case 'error':      return renderError();
+    default:           app.innerHTML = '<div class="loading">…</div>';
+  }
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// ----- HOME -----
+function renderHome() {
+  const c = state.content;
+  // Приветствие — на личной странице оно не редактируется, остаётся стандартным.
+  const greeting = 'السلام عليكم';
+  const cards = c.sections.map(s => {
+    const stats = sectionStats(s);
+    const isComplete = stats.done === stats.total && stats.total > 0;
+    let progressText;
+    if (stats.done === 0) progressText = 'не начато';
+    else if (isComplete) progressText = `все ${stats.total} ✓`;
+    else progressText = `${stats.done} из ${stats.total} сегодня`;
+    const sub = s.subtitle ? `<div class="section-sub">${esc(s.subtitle)}</div>` : '';
+    return `
+      <button class="section-card${isComplete ? ' done-today' : ''}" data-section="${esc(s.id)}">
+        <div class="section-title">${esc(s.title)}</div>
+        ${sub}
+        <div class="section-progress${isComplete ? ' complete' : ''}">${progressText}</div>
+      </button>`;
+  }).join('');
+
+  const isPublic = state.personal && state.personal.mode === 'public';
+
+  // Публичный режим: предисловие автора (letter) вверху, над разделами, со ссылкой на справку.
+  // Длинное предисловие (>220 символов) сворачивается, чтобы не застилать экран.
+  let prefaceTop = '';
+  if (isPublic && hasLetter()) {
+    const full = state.personal.letter;
+    const isLong = full.length > 220;
+    const showText = (isLong && !state.prefaceExpanded) ? truncateForPreview(full, 200) : full;
+    const toggle = isLong
+      ? `<button class="expand-toggle" id="preface-toggle">${state.prefaceExpanded ? 'Свернуть' : 'Читать дальше'}</button>`
+      : '';
+    prefaceTop = `
+      <div class="home-preface">
+        <div class="home-preface-body">${escMd(showText)}</div>
+        ${toggle}
+        <button class="home-help-link" id="open-help-top">Как пользоваться приложением →</button>
+      </div>
+      <div class="dots-divider">· · ·</div>
+    `;
+  }
+
+  // Семейный режим: личное письмо за кнопкой внизу (как было). В публичном — предисловие уже вверху.
+  const letterBtn = (!isPublic && hasLetter()) ? `
+    <div class="dots-divider">· · ·</div>
+    <button class="letter-link" id="open-letter">
+      <span class="env">✉</span>Слово от ${esc(authorName())}
+    </button>
+  ` : '';
+
+  // Призыв предложить зикр/функцию — если в personal/*.json задан feedbackEmail.
+  const fb = state.personal && state.personal.feedbackEmail;
+  const feedbackBtn = (fb && fb.trim()) ? `
+    <div class="dots-divider">· · ·</div>
+    <button class="feedback-link" id="open-feedback">
+      <span class="env">✎</span>Предложи свой зикр или функцию
+    </button>
+  ` : '';
+
+  // Одноразовая плашка после миграции — показывается, если есть свежий отчёт
+  // и пользователь ещё его не закрыл.
+  const bannerHtml = renderMigrationBannerHtml();
+
+  app.innerHTML = `
+    <div class="home-head">
+      <div class="home-head-text">
+        <div class="greet-line">
+          <span class="greet-arabic">${esc(greeting)}</span>
+          <span class="greet-name">${esc(getUserName())}</span>
+        </div>
+        <div class="greet-date">Сегодня, ${esc(formatToday())}</div>
+      </div>
+      <button class="gear-btn" id="open-settings" aria-label="Настройки">⚙</button>
+    </div>
+    ${bannerHtml}
+    ${prefaceTop}
+    <div class="section-list">${cards}</div>
+    ${letterBtn}
+    ${feedbackBtn}
+  `;
+
+  app.querySelectorAll('.section-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.currentSectionId = btn.dataset.section;
+      state.screen = 'section';
+      writeHash('#section/' + state.currentSectionId);
+      render();
+    });
+  });
+  const letterBtn2 = document.getElementById('open-letter');
+  if (letterBtn2) letterBtn2.addEventListener('click', () => {
+    state.screen = 'letter';
+    writeHash('#letter');
+    render();
+  });
+  const helpTopBtn = document.getElementById('open-help-top');
+  if (helpTopBtn) helpTopBtn.addEventListener('click', () => {
+    state.helpFrom = 'home';
+    state.screen = 'help';
+    writeHash('#help');
+    render();
+  });
+  const prefaceToggle = document.getElementById('preface-toggle');
+  if (prefaceToggle) prefaceToggle.addEventListener('click', () => {
+    state.prefaceExpanded = !state.prefaceExpanded;
+    render();
+  });
+  const feedbackBtn2 = document.getElementById('open-feedback');
+  if (feedbackBtn2) feedbackBtn2.addEventListener('click', () => {
+    state.screen = 'feedback';
+    writeHash('#feedback');
+    render();
+  });
+  document.getElementById('open-settings').addEventListener('click', () => {
+    state.screen = 'settings';
+    writeHash('#settings');
+    render();
+  });
+  const bannerClose = document.getElementById('migration-banner-close');
+  if (bannerClose) bannerClose.addEventListener('click', dismissMigrationBanner);
+}
+
+// Возвращает HTML плашки или пустую строку, если плашку показывать не нужно.
+function renderMigrationBannerHtml() {
+  const slug = getUserSlug();
+  const seen = lsGet(`azkary.${slug}.migrationNoticeShown.v${SCHEMA_VERSION}`, false);
+  if (seen) return '';
+  const r = lsGet(`azkary.${slug}.lastMigrationReport.v${SCHEMA_VERSION}`, null);
+  if (!r || !anyReportNonzero(r)) return '';
+  const archiveTotal = (r.archivedDuringMigration || 0) + (r.archivedDuringOrphanScan || 0);
+  const lines = [];
+  if (r.migratedNotes)          lines.push(`Перенесено заметок: ${r.migratedNotes}`);
+  if (r.migratedCustomRepeats)  lines.push(`Перенесено настроек повторов: ${r.migratedCustomRepeats}`);
+  if (r.migratedProgress)       lines.push(`Перенесено счётчиков прогресса: ${r.migratedProgress}`);
+  if (archiveTotal)             lines.push(`Записей в архив: ${archiveTotal}`);
+  const archiveHint = archiveTotal > 0 ? ' Подробности — в Настройках → Архив.' : '';
+  return `
+    <div class="migration-banner">
+      <button class="migration-banner-close" id="migration-banner-close" aria-label="Закрыть">×</button>
+      <div class="migration-banner-title">ℹ Приложение обновлено</div>
+      <ul>${lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul>
+      <div class="migration-banner-foot">Все ваши данные сохранены.${archiveHint}</div>
+    </div>`;
+}
+
+function dismissMigrationBanner() {
+  const slug = getUserSlug();
+  lsSet(`azkary.${slug}.migrationNoticeShown.v${SCHEMA_VERSION}`, true);
+  try { localStorage.removeItem(`azkary.${slug}.lastMigrationReport.v${SCHEMA_VERSION}`); } catch (e) {}
+  render();
+}
+
+// ----- SECTION (список зикров) -----
+function renderSection() {
+  const s = findSection(state.currentSectionId);
+  if (!s) { state.screen = 'home'; return render(); }
+
+  const sub = s.subtitle ? `<div class="subtitle">${esc(s.subtitle)}</div>` : '';
+  const items = s.items.map((it, idx) => {
+    const target = getEffectiveRepeat(it.id, it.repeat);
+    const done = getProgress(it.id) >= target;
+    const hasNote = hasUserNote(it.id);
+    const custom = getCustomRepeat(it.id);
+    const preview = it.transliteration.length > 70
+      ? it.transliteration.slice(0, 70) + '…'
+      : it.transliteration;
+    let icons = '';
+    if (custom != null)  icons += `<span class="item-tag-xN">×${custom}</span>`;
+    if (hasNote)         icons += `<span class="item-note-icon" aria-label="есть заметка">📝</span>`;
+    if (done)            icons += `<span class="item-check">✓</span>`;
+    const itemTitle = it.title && it.title.trim()
+      ? `<div class="item-title">${esc(it.title)}</div>`
+      : '';
+    return `
+      <button class="item-card" data-idx="${idx}">
+        <div class="item-num">${idx + 1}</div>
+        <div class="item-main${itemTitle ? ' has-title' : ''}">
+          ${itemTitle}
+          <div class="item-preview">${esc(preview)}</div>
+        </div>
+        <div class="item-icons">${icons}</div>
+      </button>`;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="section-head-row">
+      <button class="back-btn" id="back-home">← Назад</button>
+      <button class="section-reset-btn" id="reset-section">Обнулить</button>
+    </div>
+    <div class="section-head">
+      <h1>${esc(s.title)}</h1>
+      ${sub}
+    </div>
+    <div class="item-list">${items}</div>
+  `;
+
+  document.getElementById('back-home').addEventListener('click', () => {
+    state.screen = 'home';
+    writeHash('');
+    render();
+  });
+  document.getElementById('reset-section').addEventListener('click', () => {
+    const ok = confirm(`Сбросить прогресс раздела «${s.title}» на сегодня? Заметки и настройки сохранятся.`);
+    if (!ok) return;
+    resetSectionProgress(s.id);
+    render();
+  });
+  app.querySelectorAll('.item-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.currentItemIndex = parseInt(btn.dataset.idx, 10);
+      enterZikr();
+    });
+  });
+}
+
+// ----- ZIKR -----
+function enterZikr() {
+  const s = findSection(state.currentSectionId);
+  const idx = state.currentItemIndex;
+  const item = s.items[idx];
+  state.counter = getProgress(item.id);
+  state.doneFlash = false;
+  state.editingRepeat = false;
+  state.commentExpanded = false;
+  state.personalCommentExpanded = false;
+  state.notesEditing = false;
+  state.screen = 'zikr';
+  writeHash('#zikr/' + item.id);
+  render();
+}
+
+function renderZikr() {
+  const s = findSection(state.currentSectionId);
+  if (!s) { state.screen = 'home'; return render(); }
+  const idx = state.currentItemIndex;
+  const item = s.items[idx];
+  const target = getEffectiveRepeat(item.id, item.repeat);
+  const customSet = getCustomRepeat(item.id) != null;
+  const titleBlock = item.title && item.title.trim()
+    ? `<div class="zikr-title">${esc(item.title)}</div>`
+    : '';
+
+  // --- Источник и теги (опциональные) ---
+  const sourceBlock = (item.source && item.source.trim())
+    ? `<div class="zikr-source">Источник: ${esc(item.source)}</div>` : '';
+  const tagsBlock = (Array.isArray(item.tags) && item.tags.length)
+    ? `<div class="tags-row">${item.tags.map(t => `<span class="tag-pill">${esc(t)}</span>`).join('')}</div>`
+    : '';
+
+  // --- Repeat-line с pencil и ↺ ---
+  const repeatLine = `
+    <div class="repeat-line">
+      <span>Читать</span>
+      <strong>${target}</strong>
+      <span>${pluralizeTimes(target)}</span>
+      <button class="icon-btn ${state.editingRepeat ? 'active' : ''}" id="edit-repeat" aria-label="Изменить число повторов">✎</button>
+      <button class="icon-btn" id="reset-counter" aria-label="Сбросить счётчик">↺</button>
+    </div>`;
+
+  // --- Inline-пикер ---
+  const presets = [1, 3, 7, 10, 33, 100];
+  const editor = state.editingRepeat ? `
+    <div class="repeat-editor" id="repeat-editor">
+      <button class="qty-close" id="qty-close" aria-label="Закрыть">×</button>
+      <div class="repeat-editor-title">Сколько раз читать?</div>
+      <div class="qty-grid">
+        ${presets.map(n => `<button class="qty-btn ${n === target ? 'current' : ''}" data-qty="${n}">${n}</button>`).join('')}
+      </div>
+      <div class="qty-custom">
+        <span class="qty-custom-label">Или своё:</span>
+        <input class="qty-input" id="qty-input" type="number" min="1" max="9999" inputmode="numeric" placeholder="${target}">
+        <button class="qty-ok" id="qty-ok">ОК</button>
+      </div>
+      ${customSet ? `<button class="qty-reset" id="qty-reset">Сбросить к рекомендуемому: ${item.repeat}</button>` : ''}
+    </div>` : '';
+
+  // --- Общий комментарий (из content.json — виден всем) ---
+  // Длинный текст (>200 символов) сворачивается; разворачивается inline.
+  let commentBlock = '';
+  if (item.comment && item.comment.trim()) {
+    const full = item.comment;
+    const isLong = full.length > 200;
+    const showText = (isLong && !state.commentExpanded) ? truncateForPreview(full) : full;
+    const toggle = isLong
+      ? `<button class="expand-toggle" id="comment-toggle">${state.commentExpanded ? 'Свернуть' : 'Развернуть'}</button>`
+      : '';
+    commentBlock = `
+      <div class="comment-card">
+        <span class="comment-label">Комментарий</span>
+        <div class="comment-body">${escMd(showText)}</div>
+        ${toggle}
+      </div>`;
+  }
+
+  // --- Личный комментарий (из personal/*.json — виден только этому пользователю) ---
+  // Тот же кейс со сворачиванием, но независимый стейт.
+  let personalCommentBlock = '';
+  const personalText = state.personal && state.personal.personalComments
+    ? state.personal.personalComments[item.id]
+    : null;
+  if (personalText && personalText.trim()) {
+    const full = personalText;
+    const isLong = full.length > 200;
+    const showText = (isLong && !state.personalCommentExpanded) ? truncateForPreview(full) : full;
+    const toggle = isLong
+      ? `<button class="expand-toggle" id="personal-comment-toggle">${state.personalCommentExpanded ? 'Свернуть' : 'Развернуть'}</button>`
+      : '';
+    personalCommentBlock = `
+      <div class="comment-card comment-card--personal">
+        <span class="comment-label"><span class="comment-icon">💌</span>Тебе лично</span>
+        <div class="comment-body">${escMd(showText)}</div>
+        ${toggle}
+      </div>`;
+  }
+
+  // --- Заметки пользователя ---
+  // Если длинная И поле не в режиме редактирования — показываем превью + «Развернуть».
+  // Клик по превью или по кнопке → переход в режим редактирования (textarea с auto-resize).
+  const noteValue = getUserNote(item.id);
+  const noteHasText = noteValue.trim().length > 0;
+  const noteIsLong = noteValue.length > 200;
+  const showPreview = noteHasText && noteIsLong && !state.notesEditing;
+  let userNotesBlock;
+  if (showPreview) {
+    userNotesBlock = `
+      <div class="user-notes">
+        <span class="user-notes-label">Мои заметки</span>
+        <div class="user-notes-preview" id="user-notes-preview">${esc(truncateForPreview(noteValue))}</div>
+        <button class="expand-toggle" id="notes-toggle">Развернуть</button>
+      </div>`;
+  } else {
+    userNotesBlock = `
+      <div class="user-notes">
+        <span class="user-notes-label">Мои заметки</span>
+        <textarea class="user-notes-area" id="user-notes"
+          placeholder="Запиши свои мысли, ощущения, то что хочется запомнить…">${esc(noteValue)}</textarea>
+      </div>`;
+  }
+
+  const isLast = idx === s.items.length - 1;
+  const isFirst = idx === 0;
+
+  const tapperContent = state.doneFlash
+    ? `<div class="tapper-count">${state.counter}</div>
+       <div class="tapper-hint">Готово</div>`
+    : `<div class="tapper-count">${state.counter}</div>
+       <div class="tapper-hint">Тапни</div>`;
+
+  app.innerHTML = `
+    <button class="back-btn" id="back-section">← ${esc(s.title)}</button>
+    <div class="zikr-meta">Зикр ${idx + 1} из ${s.items.length}</div>
+    ${titleBlock}
+    <div class="arabic-block">${esc(item.arabic)}</div>
+    <div class="transliteration">${esc(item.transliteration)}</div>
+    <div class="translation">${esc(item.translation)}</div>
+    ${sourceBlock}
+    ${tagsBlock}
+    ${repeatLine}
+    ${editor}
+
+    <div class="tapper-wrap">
+      <button class="tapper${state.doneFlash ? ' done' : ''}" id="tapper" aria-label="Посчитать">
+        ${tapperContent}
+      </button>
+    </div>
+
+    ${commentBlock}
+    ${personalCommentBlock}
+    ${userNotesBlock}
+
+    <div class="zikr-nav">
+      <button class="nav-btn" id="prev-btn" ${isFirst ? 'disabled' : ''}>← Пред</button>
+      <button class="nav-btn" id="next-btn">${isLast ? 'К разделу →' : 'След →'}</button>
+    </div>
+  `;
+
+  document.getElementById('back-section').addEventListener('click', () => {
+    flushPendingNote();
+    state.screen = 'section';
+    writeHash('#section/' + s.id);
+    render();
+  });
+  document.getElementById('tapper').addEventListener('click', onTap);
+  document.getElementById('prev-btn').addEventListener('click', goPrev);
+  document.getElementById('next-btn').addEventListener('click', goNext);
+
+  // Pencil + сброс счётчика
+  document.getElementById('edit-repeat').addEventListener('click', () => {
+    state.editingRepeat = !state.editingRepeat;
+    render();
+  });
+  document.getElementById('reset-counter').addEventListener('click', () => {
+    resetZikrProgress(item.id);
+    state.counter = 0;
+    state.doneFlash = false;
+    if (state.autoAdvanceTimer) { clearTimeout(state.autoAdvanceTimer); state.autoAdvanceTimer = null; }
+    updateTapperDom(false);
+  });
+
+  // Inline-пикер (если открыт)
+  if (state.editingRepeat) {
+    document.getElementById('qty-close').addEventListener('click', () => {
+      state.editingRepeat = false; render();
+    });
+    app.querySelectorAll('.qty-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyNewRepeat(parseInt(btn.dataset.qty, 10)));
+    });
+    document.getElementById('qty-ok').addEventListener('click', () => {
+      const v = parseInt(document.getElementById('qty-input').value, 10);
+      if (Number.isFinite(v) && v >= 1) applyNewRepeat(v);
+    });
+    document.getElementById('qty-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const v = parseInt(e.target.value, 10);
+        if (Number.isFinite(v) && v >= 1) applyNewRepeat(v);
+      }
+    });
+    const resetBtn = document.getElementById('qty-reset');
+    if (resetBtn) resetBtn.addEventListener('click', () => {
+      clearCustomRepeat(item.id);
+      state.editingRepeat = false;
+      // Если счётчик уже достиг исходного значения — показать «Готово».
+      state.doneFlash = state.counter >= item.repeat;
+      render();
+    });
+  }
+
+  // Сворачивание общего комментария
+  const commentToggle = document.getElementById('comment-toggle');
+  if (commentToggle) commentToggle.addEventListener('click', () => {
+    state.commentExpanded = !state.commentExpanded;
+    render();
+  });
+
+  // Сворачивание личного комментария
+  const personalCommentToggle = document.getElementById('personal-comment-toggle');
+  if (personalCommentToggle) personalCommentToggle.addEventListener('click', () => {
+    state.personalCommentExpanded = !state.personalCommentExpanded;
+    render();
+  });
+
+  // Заметки: либо превью с «Развернуть», либо textarea с auto-resize.
+  if (showPreview) {
+    const enterEditing = () => {
+      state.notesEditing = true;
+      render();
+      const newTa = document.getElementById('user-notes');
+      if (newTa) {
+        newTa.focus();
+        // курсор в конец
+        const len = newTa.value.length;
+        try { newTa.setSelectionRange(len, len); } catch (e) {}
+        autosizeTextarea(newTa);
+      }
+    };
+    document.getElementById('user-notes-preview').addEventListener('click', enterEditing);
+    document.getElementById('notes-toggle').addEventListener('click', enterEditing);
+  } else {
+    const ta = document.getElementById('user-notes');
+    autosizeTextarea(ta);
+    ta.addEventListener('input', (e) => {
+      schedulePendingNoteSave(item.id, e.target.value);
+      autosizeTextarea(e.target);
+    });
+    ta.addEventListener('blur', flushPendingNote);
+  }
+}
+
+// Подгоняет высоту textarea под содержимое.
+function autosizeTextarea(el) {
+  if (!el) return;
+  el.style.height = 'auto';
+  // +2 чтобы не было обрезания при некоторых браузерных округлениях
+  el.style.height = (el.scrollHeight + 2) + 'px';
+}
+
+// Обрезает текст до ~180 символов по последнему пробелу, плюс «…».
+function truncateForPreview(text, max = 180) {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const lastSpace = cut.lastIndexOf(' ');
+  return (lastSpace > 100 ? cut.slice(0, lastSpace) : cut) + '…';
+}
+
+function applyNewRepeat(n) {
+  const s = findSection(state.currentSectionId);
+  const idx = state.currentItemIndex;
+  const item = s.items[idx];
+  if (n === item.repeat) {
+    clearCustomRepeat(item.id);
+  } else {
+    setCustomRepeat(item.id, n);
+  }
+  state.editingRepeat = false;
+  state.doneFlash = state.counter >= n;
+  render();
+}
+
+function onTap() {
+  const s = findSection(state.currentSectionId);
+  const idx = state.currentItemIndex;
+  const item = s.items[idx];
+  const target = getEffectiveRepeat(item.id, item.repeat);
+  const wasAtTarget = state.counter >= target;
+
+  state.counter += 1;
+  setProgress(item.id, state.counter);
+
+  // Достигли цели впервые в этом сеансе — двойная вибрация, подсветка, автопереход.
+  if (!wasAtTarget && state.counter >= target) {
+    vibrate([60, 40, 60]);
+    state.doneFlash = true;
+    updateTapperDom(true);
+    state.autoAdvanceTimer = setTimeout(() => {
+      state.autoAdvanceTimer = null;
+      goNext();
+    }, 1000);
+  } else {
+    vibrate(15);
+    updateTapperDom(state.doneFlash);
+  }
+}
+
+// Локальное обновление таппера без полной перерисовки — приятнее для глаз.
+function updateTapperDom(done) {
+  const tapper = document.getElementById('tapper');
+  if (!tapper) return;
+  tapper.classList.toggle('done', done);
+  tapper.querySelector('.tapper-count').textContent = state.counter;
+  const hint = tapper.querySelector('.tapper-hint');
+  if (hint) hint.textContent = done ? 'Готово' : 'Тапни';
+}
+
+function pluralizeTimes(n) {
+  const mod10 = n % 10, mod100 = n % 100;
+  if (mod100 >= 11 && mod100 <= 14) return 'раз';
+  if (mod10 === 1) return 'раз';
+  if (mod10 >= 2 && mod10 <= 4) return 'раза';
+  return 'раз';
+}
+
+function goPrev() {
+  if (state.currentItemIndex > 0) {
+    state.currentItemIndex -= 1;
+    enterZikr();
+  }
+}
+
+function goNext() {
+  const s = findSection(state.currentSectionId);
+  if (state.currentItemIndex < s.items.length - 1) {
+    state.currentItemIndex += 1;
+    enterZikr();
+  } else {
+    // Последний зикр в разделе — возвращаемся к списку.
+    state.screen = 'section';
+    writeHash('#section/' + s.id);
+    render();
+  }
+}
+
+// ----- LETTER -----
+function renderLetter() {
+  const text = state.personal.letter || '';
+  const userPhoto = state.personal.user && state.personal.user.photo && state.personal.user.photo.trim();
+  const authorPhoto = state.personal.author && state.personal.author.photo && state.personal.author.photo.trim();
+  const userPhotoBlock = userPhoto ? `
+    <img class="letter-photo letter-photo--user" src="${esc(userPhoto)}"
+         alt="" onerror="this.style.display='none'">` : '';
+  const authorPhotoBlock = authorPhoto ? `
+    <img class="letter-photo letter-photo--author" src="${esc(authorPhoto)}"
+         alt="" onerror="this.style.display='none'">` : '';
+  // Подпись автор ставит внутри текста письма — так контролируется падеж имени
+  // и форма сигнатуры. Снизу остаётся только опциональное фото автора.
+  const sigRow = authorPhoto ? `<div class="letter-sig-row">${authorPhotoBlock}</div>` : '';
+  app.innerHTML = `
+    <button class="back-btn" id="back-home">← Назад</button>
+    <div class="letter-page">
+      ${userPhotoBlock}
+      <div class="letter-head">· · ·</div>
+      <div class="letter-body">${escMd(text)}</div>
+      ${sigRow}
+    </div>
+  `;
+  document.getElementById('back-home').addEventListener('click', () => {
+    state.screen = 'home';
+    writeHash('');
+    render();
+  });
+}
+
+// ----- HELP (как пользоваться) -----
+// Инструкция о механике приложения — одинакова для всех, поэтому текст в коде, а не в данных.
+// Открывается ссылкой под предисловием и пунктом в настройках; «назад» возвращает туда, откуда пришли.
+function renderHelp() {
+  const backToSettings = state.helpFrom === 'settings';
+  app.innerHTML = `
+    <button class="back-btn" id="help-back">← Назад</button>
+    <div class="help-page">
+      <h1 class="settings-title">Как пользоваться</h1>
+      <p class="help-intro">Несколько простых вещей — и можно начинать.</p>
+
+      <div class="help-block">
+        <h3>Считай касанием</h3>
+        <p>Открой любой зикр и касайся большого круга — каждое касание прибавляет единицу. Когда наберёшь нужное число, круг станет зелёным и подскажет «Готово», а через секунду откроется следующий зикр.</p>
+      </div>
+
+      <div class="help-block">
+        <h3>Сколько раз читать</h3>
+        <p>Под зикром указано рекомендуемое число повторов. Хочешь иначе — нажми <span class="ic">✎</span> и задай своё. Сбросить счётчик этого зикра — кнопка <span class="ic">↺</span>.</p>
+      </div>
+
+      <div class="help-block">
+        <h3>Каждый день заново</h3>
+        <p>Счётчики обнуляются автоматически каждый день — утром начинаешь с чистого листа. Твои заметки и настройки повторов при этом сохраняются.</p>
+      </div>
+
+      <div class="help-block">
+        <h3>Заметки</h3>
+        <p>На экране зикра есть поле «Мои заметки» — запиши мысль, ощущение, то что хочется запомнить. Зикр с заметкой помечается значком <span class="ic">📝</span> в списке.</p>
+      </div>
+
+      <div class="help-block">
+        <h3>Всё хранится у тебя</h3>
+        <p>Приложение ничего не отправляет в интернет — прогресс и заметки лежат прямо в браузере на этом устройстве. На другом устройстве будет чистый старт; перенести данные можно через <span class="ic">⚙</span> Настройки → Экспорт и Импорт.</p>
+      </div>
+
+      <div class="help-block">
+        <h3>Имя</h3>
+        <p>Поменять, как тебя называть, можно в <span class="ic">⚙</span> Настройки → Профиль.</p>
+      </div>
+    </div>
+  `;
+  document.getElementById('help-back').addEventListener('click', () => {
+    state.screen = backToSettings ? 'settings' : 'home';
+    writeHash(backToSettings ? '#settings' : '');
+    render();
+  });
+}
+
+// ----- FEEDBACK (предложи свой зикр или функцию) -----
+// Не «слепой» mailto: почтовый клиент может не открыться. Поэтому адрес показан буквами —
+// его видно и можно скопировать вручную, даже если кнопка «Написать письмо» ничего не откроет.
+function renderFeedback() {
+  const email = (state.personal && state.personal.feedbackEmail || '').trim();
+  app.innerHTML = `
+    <button class="back-btn" id="fb-back">← Назад</button>
+    <div class="help-page">
+      <h1 class="settings-title">Предложи своё</h1>
+      <p class="help-intro">Знаешь зикр, который стоит добавить? Придумал, как сделать приложение удобнее? Поделись — я читаю всё.</p>
+      <div class="feedback-contact">
+        <div class="feedback-contact-label">Напиши на адрес:</div>
+        <div class="feedback-email" id="fb-email">${esc(email)}</div>
+        <div class="feedback-actions">
+          <button class="name-submit" id="fb-write">Написать письмо</button>
+          <button class="settings-btn feedback-copy-btn" id="fb-copy">Скопировать адрес</button>
+        </div>
+        <div class="feedback-note" id="fb-status"></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('fb-back').addEventListener('click', () => {
+    state.screen = 'home';
+    writeHash('');
+    render();
+  });
+  document.getElementById('fb-write').addEventListener('click', openFeedbackMail);
+  document.getElementById('fb-copy').addEventListener('click', copyFeedbackEmail);
+}
+
+// Открывает почтовый клиент с готовым письмом-предложением (адрес — из personal/*.json).
+function openFeedbackMail() {
+  const email = (state.personal && state.personal.feedbackEmail || '').trim();
+  if (!email) return;
+  const subject = 'Азкары: предложение';
+  const body = 'Ассаламу алейкум!\n\n'
+    + 'Хочу предложить (зикр или функцию):\n\n\n'
+    + `— ${getUserName()}`;
+  const url = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  try { window.location.href = url; } catch (e) { /* nope */ }
+}
+
+// Копирует адрес в буфер. Если Clipboard API недоступен — выделяет текст адреса как запасной путь.
+function copyFeedbackEmail() {
+  const email = (state.personal && state.personal.feedbackEmail || '').trim();
+  const status = document.getElementById('fb-status');
+  const done = () => { if (status) status.textContent = 'Адрес скопирован ✓'; };
+  const fail = () => { if (status) status.textContent = 'Не удалось скопировать — выдели адрес и скопируй вручную.'; };
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(email).then(done).catch(fail);
+      return;
+    }
+    const el = document.getElementById('fb-email');
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    const ok = document.execCommand && document.execCommand('copy');
+    ok ? done() : fail();
+  } catch (e) { fail(); }
+}
+
+// ----- SETTINGS -----
+function renderSettings() {
+  const archive = getArchive();
+  const backupInfo = getMigrationBackupInfo();
+  const showArchiveGroup = archive.length > 0 || backupInfo != null;
+
+  const archiveGroup = showArchiveGroup ? `
+    <div class="settings-group">
+      <div class="settings-group-label">Архив</div>
+      ${archive.length > 0
+        ? `<div class="settings-group-count">${archive.length} ${pluralizeRecords(archive.length)}</div>
+           <button class="settings-btn" id="open-archive">Посмотреть архив</button>
+           <button class="settings-btn" id="download-archive">Скачать архив (TXT)</button>
+           <button class="settings-btn settings-btn--danger" id="delete-archive">Удалить архив</button>`
+        : `<div class="settings-group-count">Архив пуст.</div>`}
+      ${backupInfo ? `<div class="settings-group-foot">Резервная копия миграции от ${esc(formatDateShort(backupInfo.createdAt))} — будет удалена ${esc(formatDateShort(backupInfo.expiresAt))}</div>` : ''}
+    </div>
+  ` : '';
+
+  // Профиль — только в публичном режиме (имя можно менять). В семейном — имя приходит
+  // из personal/*.json и не меняется через настройки.
+  const profileGroup = (state.personal && state.personal.mode === 'public') ? `
+    <div class="settings-group">
+      <div class="settings-group-label">Профиль</div>
+      <div class="settings-group-count">Имя: ${esc(getUserName())}</div>
+      <button class="settings-btn" id="change-name">Изменить имя</button>
+    </div>
+  ` : '';
+
+  // Справка — пункт «Как пользоваться». Показываем в публичном режиме.
+  const helpGroup = (state.personal && state.personal.mode === 'public') ? `
+    <div class="settings-group">
+      <div class="settings-group-label">Справка</div>
+      <button class="settings-btn" id="open-help">Как пользоваться</button>
+    </div>
+  ` : '';
+
+  app.innerHTML = `
+    <button class="back-btn" id="back-home">← Назад</button>
+    <div class="settings-page">
+      <h1 class="settings-title">Настройки</h1>
+
+      ${profileGroup}
+
+      ${helpGroup}
+
+      <div class="settings-group">
+        <div class="settings-group-label">Прогресс</div>
+        <button class="settings-btn" id="reset-today">Обнулить весь прогресс на сегодня</button>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-label">Заметки</div>
+        <button class="settings-btn" id="download-notes">Скачать мои заметки (TXT)</button>
+        <button class="settings-btn settings-btn--danger" id="delete-notes">Удалить все мои заметки</button>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-label">Резервная копия</div>
+        <button class="settings-btn" id="export-json">Экспорт всех данных (JSON)</button>
+        <button class="settings-btn" id="import-json">Импорт данных (JSON)</button>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-label">Кастомные повторы</div>
+        <button class="settings-btn" id="reset-customs">Сбросить все кастомные повторы</button>
+      </div>
+
+      ${archiveGroup}
+
+      <div class="settings-group">
+        <div class="settings-group-label">Полный сброс</div>
+        <button class="settings-btn settings-btn--danger" id="wipe-user">Удалить всё для этого пользователя</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('back-home').addEventListener('click', () => {
+    state.screen = 'home';
+    writeHash('');
+    render();
+  });
+
+  const changeNameBtn = document.getElementById('change-name');
+  if (changeNameBtn) changeNameBtn.addEventListener('click', () => {
+    state.screen = 'changeName';
+    writeHash('#change-name');
+    render();
+  });
+
+  const openHelpBtn = document.getElementById('open-help');
+  if (openHelpBtn) openHelpBtn.addEventListener('click', () => {
+    state.helpFrom = 'settings';
+    state.screen = 'help';
+    writeHash('#help');
+    render();
+  });
+
+  document.getElementById('reset-today').addEventListener('click', () => {
+    if (!confirm('Сбросить весь прогресс на сегодня? Заметки и настройки повторов сохранятся.')) return;
+    resetTodayProgress();
+    alert('Прогресс на сегодня обнулён.');
+  });
+
+  document.getElementById('download-notes').addEventListener('click', downloadNotesTxt);
+
+  document.getElementById('delete-notes').addEventListener('click', () => {
+    if (!confirm('Удалить все ваши заметки? Это действие необратимо. Рекомендуется сначала скачать заметки кнопкой выше.')) return;
+    resetAllNotes();
+    alert('Заметки удалены.');
+  });
+
+  document.getElementById('export-json').addEventListener('click', exportAllJson);
+  document.getElementById('import-json').addEventListener('click', pickImportFile);
+
+  document.getElementById('reset-customs').addEventListener('click', () => {
+    if (!confirm('Вернуть целевые повторы к рекомендуемым для всех зикров? Прогресс и заметки сохранятся.')) return;
+    resetAllCustomRepeats();
+    alert('Кастомные повторы сброшены.');
+  });
+
+  if (showArchiveGroup && archive.length > 0) {
+    document.getElementById('open-archive').addEventListener('click', () => {
+      state.screen = 'archive';
+      writeHash('#archive');
+      render();
+    });
+    document.getElementById('download-archive').addEventListener('click', downloadArchiveTxt);
+    document.getElementById('delete-archive').addEventListener('click', () => {
+      if (!confirm('Удалить все архивные записи? Это действие необратимо. Рекомендуется сначала скачать архив кнопкой выше.')) return;
+      setArchive([]);
+      alert('Архив удалён.');
+      render();
+    });
+  }
+
+  document.getElementById('wipe-user').addEventListener('click', () => {
+    const name = getUserName().trim();
+    const entered = prompt(`Удалить ВСЁ для этого пользователя: прогресс, заметки, кастомные повторы.\n\nДля подтверждения введи имя получателя — «${name}» — буквы могут быть в любом регистре:`);
+    if (entered == null) return;
+    if (entered.trim().toLowerCase() !== name.toLowerCase()) {
+      alert('Имя не совпало. Удаление отменено.');
+      return;
+    }
+    wipeUser();
+    alert('Все данные пользователя удалены.');
+    state.screen = 'home';
+    writeHash('');
+    render();
+  });
+}
+
+function pluralizeRecords(n) {
+  const mod10 = n % 10, mod100 = n % 100;
+  if (mod100 >= 11 && mod100 <= 14) return 'записей';
+  if (mod10 === 1) return 'запись';
+  if (mod10 >= 2 && mod10 <= 4) return 'записи';
+  return 'записей';
+}
+
+function formatDateShort(d) {
+  try { return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }); }
+  catch (e) { return ''; }
+}
+
+// Сборка TXT-экспорта заметок и скачивание через Blob.
+function downloadNotesTxt() {
+  const c = state.content;
+  const lines = [];
+  const heavy = '═'.repeat(40);
+  const light = '─'.repeat(40);
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+  lines.push(`Заметки ${getUserName()} · ${dateStr}`);
+  lines.push(heavy);
+  lines.push('');
+
+  let anyNotes = false;
+
+  c.sections.forEach((s, sIdx) => {
+    const sectionEntries = [];
+    s.items.forEach((it, idx) => {
+      const note = getUserNote(it.id);
+      if (note && note.trim()) {
+        anyNotes = true;
+        const preview = it.transliteration.length > 40
+          ? it.transliteration.slice(0, 40) + '…'
+          : it.transliteration;
+        sectionEntries.push({ idx, preview, note });
+      }
+    });
+    if (sectionEntries.length === 0) return;
+    if (sIdx > 0) { lines.push(heavy); lines.push(''); }
+    lines.push(s.title);
+    lines.push(light);
+    lines.push('');
+    sectionEntries.forEach((e, ei) => {
+      lines.push(`Зикр ${e.idx + 1}: «${e.preview}»`);
+      lines.push('');
+      lines.push(e.note);
+      lines.push('');
+      if (ei < sectionEntries.length - 1) {
+        lines.push(light);
+        lines.push('');
+      }
+    });
+  });
+
+  if (!anyNotes) {
+    alert('У вас пока нет заметок.');
+    return;
+  }
+
+  downloadBlob(lines.join('\n'), 'text/plain;charset=utf-8',
+               `azkary-zametki-${getUserSlug()}-${todayKey()}.txt`);
+}
+
+function downloadArchiveTxt() {
+  const archive = getArchive();
+  if (archive.length === 0) { alert('Архив пуст.'); return; }
+  const lines = [];
+  const heavy = '═'.repeat(40);
+  const light = '─'.repeat(40);
+  const dateStr = formatDateShort(new Date());
+  lines.push(`Архив ${getUserName()} · ${dateStr}`);
+  lines.push('АРХИВ');
+  lines.push(heavy);
+  lines.push('');
+  archive.forEach((e, i) => {
+    if (i > 0) { lines.push(light); lines.push(''); }
+    lines.push(e.lastTransliteration || '(без названия)');
+    if (e.lastSectionTitle) lines.push(e.lastSectionTitle);
+    const archivedAt = e.archivedAt ? new Date(e.archivedAt) : null;
+    if (archivedAt && !isNaN(archivedAt.getTime())) {
+      lines.push(`Архивировано: ${formatDateShort(archivedAt)}`);
+    }
+    lines.push('');
+    if (e.note && e.note.trim()) {
+      lines.push(e.note);
+      lines.push('');
+    }
+    if (e.customRepeat != null) {
+      lines.push(`Кастомный повтор: ${e.customRepeat}`);
+      lines.push('');
+    }
+  });
+  downloadBlob(lines.join('\n'), 'text/plain;charset=utf-8',
+               `azkary-arhiv-${getUserSlug()}-${todayKey()}.txt`);
+}
+
+// === JSON-экспорт всех данных ===
+function exportAllJson() {
+  const slug = getUserSlug();
+  const userPrefix = `azkary.${slug}.`;
+  const data = {};
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k || !k.startsWith(userPrefix)) continue;
+      const stripped = k.slice(userPrefix.length);
+      // В data попадают только пользовательские данные. Метаданные
+      // (archive, schemaVersion, contentSnapshot, preMigrationBackup, флаги) исключаем.
+      if (stripped.startsWith('progress.') || stripped.startsWith('note.')
+          || stripped.startsWith('customRepeat.')) {
+        data[stripped] = localStorage.getItem(k);
+      }
+    }
+  } catch (e) { /* ignore */ }
+
+  const payload = {
+    schemaVersion: SCHEMA_VERSION,
+    exportedAt: new Date().toISOString(),
+    userName: getUserName(),
+    appVersion: 'azkary-v3',
+    data,
+    archive: getArchive()
+  };
+
+  downloadBlob(JSON.stringify(payload, null, 2), 'application/json;charset=utf-8',
+               `azkary-backup-${slug}-${todayKey()}.json`);
+}
+
+function pickImportFile() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json,.json';
+  input.addEventListener('change', () => {
+    if (input.files && input.files[0]) importJsonFile(input.files[0]);
+  });
+  input.click();
+}
+
+function importJsonFile(file) {
+  const reader = new FileReader();
+  reader.onerror = () => alert('Не удалось прочитать файл.');
+  reader.onload = () => {
+    let payload;
+    try { payload = JSON.parse(reader.result); }
+    catch (e) {
+      alert('Не удалось разобрать JSON: ' + e.message);
+      return;
+    }
+    if (payload.schemaVersion !== SCHEMA_VERSION) {
+      alert(`Файл другой версии (schemaVersion: ${payload.schemaVersion}). ` +
+            `Это приложение работает с версией ${SCHEMA_VERSION}. Импорт отменён.`);
+      return;
+    }
+    if (!payload.data || typeof payload.data !== 'object') {
+      alert('Файл не похож на резервную копию: отсутствует поле data.');
+      return;
+    }
+    if (typeof payload.userName !== 'string') {
+      alert('Файл не похож на резервную копию: отсутствует поле userName.');
+      return;
+    }
+    if (payload.userName.trim().toLowerCase() !== getUserName().trim().toLowerCase()) {
+      const proceed = confirm(
+        `Этот файл создан пользователем «${payload.userName}», а сейчас вы «${getUserName()}». ` +
+        `Всё равно импортировать?`
+      );
+      if (!proceed) return;
+    }
+    if (!confirm(
+      'Импортировать данные? Все текущие заметки, прогресс и настройки повторов будут ' +
+      'ЗАМЕНЕНЫ данными из файла. Рекомендуется сначала сделать экспорт текущих данных.'
+    )) return;
+
+    const slug = getUserSlug();
+    wipeUser();
+    Object.keys(payload.data).forEach(k => {
+      try { localStorage.setItem(`azkary.${slug}.${k}`, payload.data[k]); } catch (e) {}
+    });
+    if (Array.isArray(payload.archive) && payload.archive.length) {
+      setArchive(payload.archive);
+    }
+    lsSet(schemaVersionKey(), SCHEMA_VERSION);
+
+    alert('Импорт завершён. Приложение перезагрузится.');
+    location.reload();
+  };
+  reader.readAsText(file);
+}
+
+// Общий хелпер: скачать строку как файл через Blob.
+function downloadBlob(content, type, filename) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ----- ARCHIVE -----
+function renderArchive() {
+  // При первом открытии архива снимаем флаг плашки миграции:
+  // пользователь увидел свои данные — уведомление выполнило свою цель.
+  const slug = getUserSlug();
+  if (!lsGet(`azkary.${slug}.migrationNoticeShown.v${SCHEMA_VERSION}`, false)) {
+    lsSet(`azkary.${slug}.migrationNoticeShown.v${SCHEMA_VERSION}`, true);
+    try { localStorage.removeItem(`azkary.${slug}.lastMigrationReport.v${SCHEMA_VERSION}`); } catch (e) {}
+  }
+
+  const archive = getArchive();
+  const list = archive.length === 0
+    ? `<div class="archive-empty">Архив пуст.</div>`
+    : `<div class="archive-list">${archive.map(renderArchiveCardHtml).join('')}</div>`;
+
+  app.innerHTML = `
+    <button class="back-btn" id="back-settings">← Назад</button>
+    <div class="archive-page">
+      <h1 class="settings-title">Архив</h1>
+      <p class="archive-hint">Заметки к зикрам, которых больше нет в приложении. Эти данные сохранены, но недоступны через обычные разделы.</p>
+      ${list}
+    </div>
+  `;
+
+  document.getElementById('back-settings').addEventListener('click', () => {
+    state.screen = 'settings';
+    writeHash('#settings');
+    render();
+  });
+}
+
+function renderArchiveCardHtml(entry) {
+  const date = entry.archivedAt ? new Date(entry.archivedAt) : null;
+  const dateStr = date && !isNaN(date.getTime())
+    ? date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '—';
+  const noteHtml = entry.note && entry.note.trim()
+    ? `<div class="archive-card-note">«${esc(entry.note)}»</div>` : '';
+  const crHtml = (entry.customRepeat != null)
+    ? `<div class="archive-card-cr">Кастомный повтор: ${esc(String(entry.customRepeat))}</div>` : '';
+  return `
+    <div class="archive-card">
+      <div class="archive-card-title">${esc(entry.lastTransliteration || '(без названия)')}</div>
+      ${entry.lastSectionTitle ? `<div class="archive-card-section">${esc(entry.lastSectionTitle)}</div>` : ''}
+      <div class="archive-card-date">Архивировано: ${esc(dateStr)}</div>
+      ${noteHtml}
+      ${crHtml}
+    </div>`;
+}
+
+// ----- ENTER NAME (публичный режим, первый запуск) -----
+// Показываем приветствие и письмо (общее обращение к читателям), просим имя.
+// После ввода — сохраняем в localStorage и запускаем оставшуюся часть init.
+function renderEnterName() {
+  const greeting = 'السلام عليكم';
+  const letterText = state.personal.letter || '';
+  const letterBlock = letterText
+    ? `<div class="letter-head">· · ·</div>
+       <div class="letter-body">${escMd(letterText)}</div>
+       <div class="dots-divider">· · ·</div>`
+    : '<div class="dots-divider">· · ·</div>';
+
+  app.innerHTML = `
+    <div class="enter-name-page">
+      <div class="greet-line center">
+        <span class="greet-arabic">${esc(greeting)}</span>
+      </div>
+      ${letterBlock}
+      <div class="name-form">
+        <label class="name-form-label" for="name-input">Как тебя называть?</label>
+        <input class="name-input" id="name-input" type="text"
+               autocomplete="given-name" maxlength="40" placeholder="Имя">
+        <button class="name-submit" id="name-submit">Начать</button>
+      </div>
+    </div>
+  `;
+
+  const input = document.getElementById('name-input');
+  const submit = document.getElementById('name-submit');
+  setTimeout(() => { try { input.focus(); } catch (e) {} }, 50);
+
+  const handleSubmit = () => {
+    const v = input.value.trim();
+    if (!v) { try { input.focus(); } catch (e) {} return; }
+    lsSet('azkary.publicUserName', v);
+    // Снимаем 'enterName' — иначе applyHash() в runPostNameInit() уйдёт по guard,
+    // и render() снова отрисует экран ввода имени.
+    state.screen = 'loading';
+    runPostNameInit();
+  };
+  submit.addEventListener('click', handleSubmit);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSubmit(); });
+}
+
+// ----- CHANGE NAME (публичный режим, настройки) -----
+function renderChangeName() {
+  const current = getUserName();
+  app.innerHTML = `
+    <button class="back-btn" id="back-settings">← Назад</button>
+    <div class="settings-page">
+      <h1 class="settings-title">Изменить имя</h1>
+      <div class="name-form">
+        <label class="name-form-label" for="name-input">Как тебя называть?</label>
+        <input class="name-input" id="name-input" type="text"
+               autocomplete="given-name" maxlength="40" value="${esc(current)}">
+        <button class="name-submit" id="name-save">Сохранить</button>
+      </div>
+    </div>
+  `;
+
+  const input = document.getElementById('name-input');
+  const save = document.getElementById('name-save');
+  setTimeout(() => {
+    try {
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+    } catch (e) {}
+  }, 50);
+
+  const handleSubmit = () => {
+    const v = input.value.trim();
+    if (!v) { try { input.focus(); } catch (e) {} return; }
+    if (v !== current) applyNewPublicName(v);
+    state.screen = 'settings';
+    writeHash('#settings');
+    render();
+  };
+  save.addEventListener('click', handleSubmit);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSubmit(); });
+  document.getElementById('back-settings').addEventListener('click', () => {
+    state.screen = 'settings';
+    writeHash('#settings');
+    render();
+  });
+}
+
+// Меняет имя публичного пользователя. Если slug поменялся — переносит все ключи под новый префикс,
+// чтобы заметки/прогресс/настройки не потерялись.
+function applyNewPublicName(newName) {
+  const oldSlug = getUserSlug();
+  lsSet('azkary.publicUserName', newName);
+  const newSlug = getUserSlug();
+  if (oldSlug === newSlug) return;
+  try {
+    const oldPrefix = `azkary.${oldSlug}.`;
+    const newPrefix = `azkary.${newSlug}.`;
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(oldPrefix)) keys.push(k);
+    }
+    keys.forEach(k => {
+      const v = localStorage.getItem(k);
+      if (v == null) return;
+      const newKey = newPrefix + k.slice(oldPrefix.length);
+      try {
+        localStorage.setItem(newKey, v);
+        localStorage.removeItem(k);
+      } catch (e) { /* skip key on error */ }
+    });
+  } catch (e) { /* ignore */ }
+}
+
+// ----- ERROR -----
+function renderError() {
+  app.innerHTML = `
+    <div class="error-card">
+      <h2>${esc(state.errorTitle || 'Что-то пошло не так')}</h2>
+      <p>Проверь файлы <code>content.json</code> и <code>personal/*.json</code> рядом с <code>azkary.html</code>.</p>
+      <pre>${esc(state.errorDetail || '')}</pre>
+      <p class="muted" style="font-size:13px">Подробности про формат — в <code>README.md</code> и <code>CLAUDE.md</code>.</p>
+    </div>
+  `;
+}
+
+// ============================================================
+// СТАРТ
+// ============================================================
+init();
+</script>
+</body>
+</html>
