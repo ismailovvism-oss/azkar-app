@@ -551,6 +551,50 @@
     margin: 0 auto 28px;
   }
 
+  /* === АКТИВНАЯ ЗОНА ТАПА (текстовый блок) ===
+     Тонкая ненавязчивая охровая рамка-индикатор + бейдж-дубль счётчика в углу.
+     Рамка — псевдоэлемент с opacity, чтобы быть полупрозрачной независимо от
+     hex-значения --accent. pointer-events:none — рамка не перехватывает тапы. */
+  .tap-zone-active {
+    position: relative;
+    padding: 16px 18px;
+    border-radius: 14px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tap-zone-active::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1.5px solid var(--accent);
+    border-radius: 14px;
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  .zone-badge {
+    position: absolute;
+    top: -12px;
+    right: -6px;
+    min-width: 28px;
+    height: 26px;
+    padding: 0 9px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--surface);
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 26px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 0 0 3px var(--bg);
+    z-index: 2;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background 0.25s ease;
+  }
+  .zone-badge.done { background: var(--success); }
+
   /* Большой круглый таппер */
   .tapper-wrap { display: flex; justify-content: center; margin-bottom: 26px; }
   .tapper {
@@ -1009,6 +1053,55 @@
   }
   .theme-option.active .theme-option-label { color: var(--accent); }
 
+  /* === ВЫБОР ЗОНЫ СЧЁТА (радио-список в настройках) === */
+  .zone-options { display: flex; flex-direction: column; gap: 8px; }
+  .zone-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    transition: border-color 0.15s;
+  }
+  .zone-option:hover { border-color: var(--gold); }
+  .zone-option.active { border-color: var(--accent); }
+  .zone-radio {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink-muted);
+    margin-top: 3px;
+    position: relative;
+    transition: border-color 0.15s;
+  }
+  .zone-option.active .zone-radio { border-color: var(--accent); }
+  .zone-option.active .zone-radio::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .zone-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .zone-name {
+    font-family: var(--display);
+    font-size: 16.5px;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .zone-option.active .zone-name { color: var(--accent); }
+  .zone-desc {
+    font-size: 12.5px;
+    color: var(--ink-muted);
+    line-height: 1.4;
+  }
+
   /* === ARCHIVE === */
   .archive-page { padding-top: 4px; }
   .archive-hint {
@@ -1295,6 +1388,43 @@ function applyStoredTheme() { applyTheme(getStoredTheme(), false); }
 // Применяем как можно раньше — до первого render и async-загрузки, чтобы не
 // мелькнул дефолтный фон (особенно при выбранной «Ночи»).
 applyStoredTheme();
+
+// ============================================================
+// ЗОНА СЧЁТА (выбор активной зоны тапа на экране зикра)
+// ============================================================
+// На длинных дуа арабский текст вверху, а круг-табло уходит вниз — читать и
+// тапать одновременно неудобно. Поэтому пользователь может выбрать, по какой
+// области экрана засчитывается повтор. Круг внизу остаётся ВСЕГДА как главное
+// табло и тоже считает; для текстовых зон рядом с блоком появляется бейдж-дубль.
+//   circle       — только круг внизу (по умолчанию; текущее поведение)
+//   arabic       — блок арабского текста
+//   translit     — блок транслитерации
+//   translation  — блок перевода
+//   screen       — любое место экрана зикра (кроме интерактивных элементов)
+// Это настройка УСТРОЙСТВА (slug-независимая, как azkary.theme), общая для всех
+// учёток в браузере. Ключ — 'azkary.tapZone'.
+const TAP_ZONE_OPTIONS = [
+  { id: 'circle',      name: 'Круг',           desc: 'Тап по круглой кнопке внизу — как сейчас (по умолчанию)' },
+  { id: 'arabic',      name: 'Арабский текст', desc: 'Тап по блоку арабского текста' },
+  { id: 'translit',    name: 'Транслитерация', desc: 'Тап по блоку транслитерации' },
+  { id: 'translation', name: 'Перевод',        desc: 'Тап по блоку перевода' },
+  { id: 'screen',      name: 'Весь экран',     desc: 'Тап по любому месту экрана зикра' }
+];
+const DEFAULT_TAP_ZONE = 'circle';
+
+function getTapZone() {
+  const z = lsGet('azkary.tapZone', null);
+  return TAP_ZONE_OPTIONS.some(o => o.id === z) ? z : DEFAULT_TAP_ZONE;
+}
+function setTapZone(z) {
+  if (TAP_ZONE_OPTIONS.some(o => o.id === z)) lsSet('azkary.tapZone', z);
+}
+
+// Селектор интерактивных элементов, по которым тап НЕ должен засчитывать повтор
+// (кнопки, ссылки, теги, поле заметок и т.п.). Используется во всех зонах, кроме
+// круга. closest() ловит и попадание во вложенный текст интерактивного элемента.
+const TAP_EXCLUDE_SELECTOR =
+  'button, a, textarea, input, select, label, [role="button"], .tag-pill, .user-notes';
 
 // ============================================================
 // ЗАГРУЗКА И ВАЛИДАЦИЯ
@@ -2524,13 +2654,23 @@ function renderZikr() {
     : `<div class="tapper-count">${state.counter}</div>
        <div class="tapper-hint">Тапни</div>`;
 
+  // --- Зона счёта ---
+  // Для активной текстовой зоны блок получает класс-индикатор (тонкая рамка)
+  // и бейдж-дубль счётчика в углу. Круг внизу остаётся всегда. См. TAP_ZONE_OPTIONS.
+  const tapZone = getTapZone();
+  const zoneClass = (zoneId) => (tapZone === zoneId) ? ' tap-zone-active' : '';
+  const zoneBadge = (zoneId) => (tapZone === zoneId)
+    ? `<span class="zone-badge${state.doneFlash ? ' done' : ''}" id="zone-badge" aria-hidden="true">${state.counter}</span>`
+    : '';
+
   app.innerHTML = `
+   <div id="zikr-root">
     <button class="back-btn" id="back-section">← ${esc(s.title)}</button>
     <div class="zikr-meta">Зикр ${idx + 1} из ${s.items.length}</div>
     ${titleBlock}
-    <div class="arabic-block">${esc(item.arabic)}</div>
-    <div class="transliteration">${esc(item.transliteration)}</div>
-    <div class="translation">${esc(item.translation)}</div>
+    <div class="arabic-block${zoneClass('arabic')}">${zoneBadge('arabic')}${esc(item.arabic)}</div>
+    <div class="transliteration${zoneClass('translit')}">${zoneBadge('translit')}${esc(item.transliteration)}</div>
+    <div class="translation${zoneClass('translation')}">${zoneBadge('translation')}${esc(item.translation)}</div>
     ${sourceBlock}
     ${tagsBlock}
     ${repeatLine}
@@ -2550,6 +2690,7 @@ function renderZikr() {
       <button class="nav-btn" id="prev-btn" ${isFirst ? 'disabled' : ''}>← Пред</button>
       <button class="nav-btn" id="next-btn">${isLast ? 'К разделу →' : 'След →'}</button>
     </div>
+   </div>
   `;
 
   document.getElementById('back-section').addEventListener('click', () => {
@@ -2642,6 +2783,43 @@ function renderZikr() {
     });
     ta.addEventListener('blur', flushPendingNote);
   }
+
+  // --- Активная зона тапа (кроме круга — у него собственный click выше) ---
+  // Текстовая зона: слушаем сам блок. «Весь экран»: слушаем #zikr-root (он
+  // пересоздаётся каждый render, поэтому листенеры не накапливаются на #app).
+  if (tapZone === 'screen') {
+    attachTapCounter(document.getElementById('zikr-root'));
+  } else if (tapZone !== 'circle') {
+    attachTapCounter(app.querySelector('.tap-zone-active'));
+  }
+}
+
+// Навешивает счёт повтора по тапу на произвольную область (текстовый блок или
+// весь экран зикра). Отличает чистый тап от прокрутки: если палец между
+// нажатием и отпусканием сдвинулся больше TAP_MOVE_TOLERANCE — это скролл, не
+// засчитываем. Тап по интерактивному элементу (TAP_EXCLUDE_SELECTOR) тоже не
+// считается. Использует Pointer Events (покрывают и touch, и мышь).
+const TAP_MOVE_TOLERANCE = 10; // px
+function attachTapCounter(el) {
+  if (!el) return;
+  let tracking = false, sx = 0, sy = 0;
+  const isExcluded = (node) =>
+    node && node.closest && node.closest(TAP_EXCLUDE_SELECTOR) != null;
+  el.addEventListener('pointerdown', (e) => {
+    if (isExcluded(e.target)) { tracking = false; return; }
+    tracking = true; sx = e.clientX; sy = e.clientY;
+  });
+  el.addEventListener('pointerup', (e) => {
+    if (!tracking) return;
+    tracking = false;
+    if (isExcluded(e.target)) return;
+    // Сдвиг больше допуска — это прокрутка/свайп, не тап. Длинные дуа
+    // прокручивают пальцем, и это не должно накручивать счётчик.
+    if (Math.hypot(e.clientX - sx, e.clientY - sy) > TAP_MOVE_TOLERANCE) return;
+    onTap();
+  });
+  // При прокрутке браузер обычно шлёт pointercancel вместо pointerup — сбросим.
+  el.addEventListener('pointercancel', () => { tracking = false; });
 }
 
 // Подгоняет высоту textarea под содержимое.
@@ -2700,13 +2878,21 @@ function onTap() {
 }
 
 // Локальное обновление таппера без полной перерисовки — приятнее для глаз.
+// Держит круг-табло и бейдж активной зоны в синхроне (одно число, одно
+// состояние «готово»).
 function updateTapperDom(done) {
   const tapper = document.getElementById('tapper');
-  if (!tapper) return;
-  tapper.classList.toggle('done', done);
-  tapper.querySelector('.tapper-count').textContent = state.counter;
-  const hint = tapper.querySelector('.tapper-hint');
-  if (hint) hint.textContent = done ? 'Готово' : 'Тапни';
+  if (tapper) {
+    tapper.classList.toggle('done', done);
+    tapper.querySelector('.tapper-count').textContent = state.counter;
+    const hint = tapper.querySelector('.tapper-hint');
+    if (hint) hint.textContent = done ? 'Готово' : 'Тапни';
+  }
+  const badge = document.getElementById('zone-badge');
+  if (badge) {
+    badge.textContent = state.counter;
+    badge.classList.toggle('done', done);
+  }
 }
 
 function pluralizeTimes(n) {
@@ -2935,6 +3121,27 @@ function renderSettings() {
     </div>
   `;
 
+  // Счётчик — выбор активной зоны тапа на экране зикра. Это поведение (не вид),
+  // поэтому отдельная группа от «Оформления». Настройка устройства, оба режима.
+  const activeZone = getTapZone();
+  const zoneOptions = TAP_ZONE_OPTIONS.map(o => {
+    const active = o.id === activeZone;
+    return `<button class="zone-option${active ? ' active' : ''}" data-zone="${esc(o.id)}" role="radio" aria-checked="${active}">
+        <span class="zone-radio"></span>
+        <span class="zone-text">
+          <span class="zone-name">${esc(o.name)}</span>
+          <span class="zone-desc">${esc(o.desc)}</span>
+        </span>
+      </button>`;
+  }).join('');
+  const counterGroup = `
+    <div class="settings-group">
+      <div class="settings-group-label">Счётчик</div>
+      <div class="settings-group-count">Где засчитывается повтор на экране зикра. Круг внизу считает всегда.</div>
+      <div class="zone-options" role="radiogroup" aria-label="Зона счёта">${zoneOptions}</div>
+    </div>
+  `;
+
   app.innerHTML = `
     <button class="back-btn" id="back-home">← Назад</button>
     <div class="settings-page">
@@ -2945,6 +3152,8 @@ function renderSettings() {
       ${helpGroup}
 
       ${themeGroup}
+
+      ${counterGroup}
 
       <div class="settings-group">
         <div class="settings-group-label">Прогресс</div>
@@ -3003,6 +3212,14 @@ function renderSettings() {
   app.querySelectorAll('.theme-option').forEach(btn => {
     btn.addEventListener('click', () => {
       applyTheme(btn.dataset.themeId, true);
+      render();
+    });
+  });
+
+  // Выбор зоны счёта — сохраняем и перерисовываем настройки (обновить радио).
+  app.querySelectorAll('.zone-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setTapZone(btn.dataset.zone);
       render();
     });
   });
