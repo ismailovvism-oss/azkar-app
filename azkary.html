@@ -34,6 +34,62 @@
     --arabic: 'Amiri', 'Scheherazade New', 'Times New Roman', serif;
   }
 
+  /* === ЦВЕТОВЫЕ СХЕМЫ ===
+     Палитра целиком вынесена в переменные :root (выше — «Кремовая» по
+     умолчанию). Схема выбирается атрибутом html[data-theme=…] (см. applyTheme).
+     Все схемы держатся одного принципа: тёплая, бумажная, сдержанная.
+     Никакого кича — только смена температуры и светлоты бумаги и акцента.
+     Источник истины по цвету шапки/манифеста — массив THEMES в JS. */
+
+  /* Заря — тёплый рассвет, пыльная роза */
+  html[data-theme="dawn"] {
+    --bg: #F7EBE4;
+    --surface: #FFFBF8;
+    --ink: #2A1F1A;
+    --ink-muted: #897068;
+    --accent: #A65A4C;
+    --accent-soft: #F1DBD2;
+    --gold: #BE8A6C;
+    --success: #5C7050;
+    --success-soft: #DDE6D2;
+    --error: #97382C;
+    --error-soft: #F2D9D2;
+    --border: #EDD9CF;
+  }
+
+  /* Сумерки — приглушённый вечерний мововый тон */
+  html[data-theme="twilight"] {
+    --bg: #EEE8EC;
+    --surface: #FBF8FA;
+    --ink: #25202A;
+    --ink-muted: #756B79;
+    --accent: #7C5E78;
+    --accent-soft: #E4DAE4;
+    --gold: #A98BA0;
+    --success: #5A6E5C;
+    --success-soft: #DCE5DC;
+    --error: #8E3A40;
+    --error-soft: #EED7D8;
+    --border: #E0D6DF;
+  }
+
+  /* Ночь — тёплая тёмная бумага для чтения в темноте.
+     Светлота инвертирована, но температура та же тёплая. */
+  html[data-theme="night"] {
+    --bg: #1B1714;
+    --surface: #25201A;
+    --ink: #ECE2D1;
+    --ink-muted: #9C907A;
+    --accent: #CC9E72;
+    --accent-soft: #3A2F22;
+    --gold: #C9A36B;
+    --success: #8FAE7F;
+    --success-soft: #2C3A28;
+    --error: #D98C7C;
+    --error-soft: #3E2823;
+    --border: #3A3127;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: var(--bg); }
   body {
@@ -910,6 +966,49 @@
     margin: -2px 4px 8px;
   }
 
+  /* === ВЫБОР ОФОРМЛЕНИЯ === */
+  .theme-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 2px;
+  }
+  .theme-option {
+    flex: 1 1 0;
+    min-width: 92px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 10px 9px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .theme-option:hover { border-color: var(--gold); }
+  .theme-option.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .theme-swatch {
+    width: 100%;
+    height: 30px;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    border: 1px solid var(--border);
+  }
+  .theme-swatch span { flex: 1; }
+  .theme-option-label {
+    font-family: var(--display);
+    font-size: 15px;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .theme-option.active .theme-option-label { color: var(--accent); }
+
   /* === ARCHIVE === */
   .archive-page { padding-top: 4px; }
   .archive-hint {
@@ -1145,6 +1244,57 @@ const state = {
 };
 
 const app = document.getElementById('app');
+
+// ============================================================
+// ЦВЕТОВЫЕ СХЕМЫ (ОФОРМЛЕНИЕ)
+// ============================================================
+// Палитра целиком живёт в CSS-переменных :root; схема выбирается атрибутом
+// html[data-theme=…] (CSS-блок «ЦВЕТОВЫЕ СХЕМЫ»). Здесь — единственный источник
+// истины по списку схем, цвету системной шапки (meta theme-color) и фону PWA-манифеста.
+//   id     — значение для html[data-theme] и ключа localStorage
+//   label  — подпись в настройках
+//   bg     — основной фон схемы (он же theme_color / background_color манифеста)
+//   swatch — 3 цвета для превью-плашки в настройках (фон · акцент · золото)
+// Выбор НЕ зависит от пользователя (slug) — это настройка устройства, общая для
+// всех учёток на этом браузере. Ключ — slug-независимый 'azkary.theme'.
+const THEMES = [
+  { id: 'cream',    label: 'Кремовая', bg: '#F5EFE3', swatch: ['#F5EFE3', '#8B5E34', '#B5895A'] },
+  { id: 'dawn',     label: 'Заря',     bg: '#F7EBE4', swatch: ['#F7EBE4', '#A65A4C', '#BE8A6C'] },
+  { id: 'twilight', label: 'Сумерки',  bg: '#EEE8EC', swatch: ['#EEE8EC', '#7C5E78', '#A98BA0'] },
+  { id: 'night',    label: 'Ночь',     bg: '#1B1714', swatch: ['#1B1714', '#CC9E72', '#C9A36B'] }
+];
+const DEFAULT_THEME = 'cream';
+
+function themeById(id) { return THEMES.find(t => t.id === id) || THEMES[0]; }
+
+function getStoredTheme() {
+  const t = lsGet('azkary.theme', null);
+  return (typeof t === 'string' && THEMES.some(x => x.id === t)) ? t : DEFAULT_THEME;
+}
+
+// Применяет схему: переключает html[data-theme], обновляет meta theme-color
+// (цвет системной шапки браузера/PWA) и, если контент уже загружен, держит
+// манифест в синхроне. persist=true — запоминает выбор в localStorage.
+function applyTheme(id, persist) {
+  const theme = themeById(id);
+  if (theme.id === DEFAULT_THEME) {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', theme.id);
+  }
+  let meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) { meta = document.createElement('meta'); meta.name = 'theme-color'; document.head.appendChild(meta); }
+  meta.content = theme.bg;
+  if (persist) lsSet('azkary.theme', theme.id);
+  // Манифест хранит цвет фона/шапки PWA — пересоберём, если уже есть контент.
+  if (state.content) setupDynamicManifest();
+}
+
+function applyStoredTheme() { applyTheme(getStoredTheme(), false); }
+
+// Применяем как можно раньше — до первого render и async-загрузки, чтобы не
+// мелькнул дефолтный фон (особенно при выбранной «Ночи»).
+applyStoredTheme();
 
 // ============================================================
 // ЗАГРУЗКА И ВАЛИДАЦИЯ
@@ -1968,14 +2118,15 @@ function setupDynamicManifest() {
     const dir = location.pathname.replace(/[^/]*$/, '');            // каталог страницы, напр. "/"
     const startUrl = origin + location.pathname + location.search;  // сохраняем ?u=...
     const name = getUserName();
+    const themeColor = themeById(getStoredTheme()).bg;  // фон/шапка PWA — по выбранной схеме
     const manifest = {
       name: (name && name !== 'друг') ? `Азкары · ${name}` : 'Азкары',
       short_name: 'Азкары',
       start_url: startUrl,
       scope: origin + dir,
       display: 'standalone',
-      background_color: '#F5EFE3',
-      theme_color: '#F5EFE3',
+      background_color: themeColor,
+      theme_color: themeColor,
       lang: 'ru',
       icons: [
         { src: origin + dir + 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
@@ -2766,6 +2917,24 @@ function renderSettings() {
     </div>
   ` : '';
 
+  // Оформление — выбор цветовой схемы. Доступно в обоих режимах: это настройка
+  // устройства, не личных данных. Превью-плашка показывает фон · акцент · золото.
+  const activeTheme = getStoredTheme();
+  const themeOptions = THEMES.map(t => {
+    const active = t.id === activeTheme;
+    const bands = t.swatch.map(c => `<span style="background:${c}"></span>`).join('');
+    return `<button class="theme-option${active ? ' active' : ''}" data-theme-id="${esc(t.id)}" aria-pressed="${active}">
+        <span class="theme-swatch">${bands}</span>
+        <span class="theme-option-label">${esc(t.label)}</span>
+      </button>`;
+  }).join('');
+  const themeGroup = `
+    <div class="settings-group">
+      <div class="settings-group-label">Оформление</div>
+      <div class="theme-grid">${themeOptions}</div>
+    </div>
+  `;
+
   app.innerHTML = `
     <button class="back-btn" id="back-home">← Назад</button>
     <div class="settings-page">
@@ -2774,6 +2943,8 @@ function renderSettings() {
       ${profileGroup}
 
       ${helpGroup}
+
+      ${themeGroup}
 
       <div class="settings-group">
         <div class="settings-group-label">Прогресс</div>
@@ -2825,6 +2996,15 @@ function renderSettings() {
     state.screen = 'help';
     writeHash('#help');
     render();
+  });
+
+  // Выбор цветовой схемы — применяется мгновенно, перерисовываем настройки,
+  // чтобы обновить активную подсветку (экран остаётся 'settings').
+  app.querySelectorAll('.theme-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyTheme(btn.dataset.themeId, true);
+      render();
+    });
   });
 
   document.getElementById('reset-today').addEventListener('click', () => {
